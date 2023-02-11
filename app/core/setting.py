@@ -10,7 +10,8 @@ class Setting(BaseSettings):
     print("========= environment =========: ", environment)
     if environment != "":
         config = Config("app/environment/environment.{}env".format(environment))
-    WIDTH = config("width", default= 48)
+    width = config("width", default=48)
+    height = config("height", default=48)
 
 
 
