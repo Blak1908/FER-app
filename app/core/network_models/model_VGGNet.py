@@ -3,7 +3,6 @@ from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras.losses import categorical_crossentropy
 from keras.models import Sequential
-
 class VGGNet(Sequential):
   def __init__(self, input_shape, num_classes):
     super().__init__()
