@@ -8,3 +8,11 @@ opencv-python==4.7.0.68
 pypyr
 python-dotenv
 gunicorn
+scikit-learn
+scipy
+pandas
+pandas-datareader
+matplotlib
+tqdm
+boto3
+jupyter
