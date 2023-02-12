@@ -1,7 +1,6 @@
 import sys
 import os 
 import tensorflow as tf 
-from . import model_ResNet
 
 cwd = os.getcwd()
 
@@ -20,7 +19,7 @@ user_path = get_root_project(cwd)
 sys.path.append(user_path)
 
 from app.core.settings import get_setting
-
+from app.core.network_models import model_ResNet
 
 def _load(checkpoint_path):
     checkpoint = tf.train.Checkpoint()
@@ -40,6 +39,8 @@ settings = get_setting()
 
 
 model = load_resnet_model(settings.MODEL_RESNET)
+
+model.summary()
 
 
 
