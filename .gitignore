@@ -1,3 +1,6 @@
 Dataset/*
 Project-AI-Research/*
 venv-fer/*
+.vscode/*
+app/.DS_Store/*
+.DS_Store/*
