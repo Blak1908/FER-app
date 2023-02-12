@@ -1,18 +1,31 @@
 
 import tensorflow
-from keras.utils import to_categorical
 import os
-import numpy as np
+import sys
 import tensorflow
 from keras import Model
-from keras.datasets import cifar10
 from keras.layers import Add, GlobalAveragePooling2D,Dense, Flatten, Conv2D, Lambda,Input , BatchNormalization, Activation
-from keras.optimizers import schedules, SGD
-from keras.callbacks import TensorBoard, ModelCheckpoint
-from core import setting
 
 
-setting = setting.get_settings()
+cwd = os.getcwd()
+
+def get_root_project(cwd):
+    user_path = ''
+    path_list = cwd.split('/')
+    for i in path_list:
+        if str(i) == 'app':
+            return user_path
+        user_path = str(user_path) +  str(i) + '/'
+    return False
+
+user_path = get_root_project(cwd)
+
+
+sys.path.append(user_path)
+
+from app.core.settings import get_setting
+
+setting = get_settings()
 
 def residual_block(x, number_of_filters, match_filter_size=False):
 
