@@ -2,7 +2,8 @@ import os
 from pydantic import BaseSettings
 from starlette.config import Config
 from tensorflow.keras.losses import CategoricalCrossentropy
-from tensorflow.keras.optimizers import schedules, SGD
+from tensorflow.keras.optimizers import schedules
+from tensorflow.keras.optimizers.experimental import SGD
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 from tensorflow.keras import initializers
 config  = Config("app/environment/environment.env")
@@ -34,6 +35,8 @@ class Settings(BaseSettings):
     CALLBACKS = config("callbacks", default=[TENSORBOARD,CHECKPOINT])
     SHORTCUT_TYPE = config("shortcut_type", default='identity')
     MODEL_RESNET = config("model_resnet", default='weights/resnet.h5')
+    MODEL_ALEXNET =config("model_alexnet", default='weights/alexnet.h5')
+    MODEL_VGGNET = config("model_vggnet", default='weights/vggnet.h5')
 
 
 

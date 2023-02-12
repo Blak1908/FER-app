@@ -3,4 +3,4 @@ Project-AI-Research/*
 venv-fer/*
 .vscode/*
 .DS_Store/*
-weights/
+weights/*

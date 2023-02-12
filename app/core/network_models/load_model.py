@@ -19,7 +19,7 @@ user_path = get_root_project(cwd)
 sys.path.append(user_path)
 
 from app.core.settings import get_setting
-from app.core.network_models import model_ResNet
+from app.core.network_models import model_AlexNet
 
 def _load(checkpoint_path):
     checkpoint = tf.train.Checkpoint()
@@ -30,15 +30,15 @@ def _load(checkpoint_path):
 if not os.path.exists('weights'):
     os.mkdir('weights')
 
-def load_resnet_model(weights_path):
-    model = model_ResNet.init_ResNet_model()
+def load_alex_model(weights_path):
+    model = model_AlexNet()
     model.load_weights(weights_path)
     return model
 
 settings = get_setting()
 
 
-model = load_resnet_model(settings.MODEL_RESNET)
+model = load_alex_model(settings.MODEL_ALEXNET)
 
 model.summary()
 
