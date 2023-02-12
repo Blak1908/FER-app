@@ -1,11 +1,10 @@
 import os
 from pydantic import BaseSettings
 from starlette.config import Config
-from keras.losses import CategoricalCrossentropy
-from keras.optimizers import schedules, SGD
-from keras.callbacks import TensorBoard, ModelCheckpoint
-
-
+from tensorflow.keras.losses import CategoricalCrossentropy
+from tensorflow.keras.optimizers import schedules, SGD
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
+from tensorflow.keras import initializers
 config  = Config("app/environment/environment.env")
 
 class Settings(BaseSettings):
@@ -25,11 +24,11 @@ class Settings(BaseSettings):
     LOSS = config("loss", default= CategoricalCrossentropy(from_logits=True))
     BOUNDARIES = config("boundaries", default= [32000, 48000])
     VALUES = config("values", default= [0.1, 0.01, 0.001])
-    LR_SCHEDULE = config("lr_schedule", default=schedules.PiecewiseConstantDecay(BOUNDARIES, VALUES))
-    INITIALIZER = config("initializer", default=keras.initializers.HeNormal())
+    LR_SCHEDULE = config("lr_schedule", default= schedules.PiecewiseConstantDecay(BOUNDARIES, VALUES))
+    INITIALIZER = config("initializer", default= initializers.HeNormal())
     OPTIMIZER_MOMENTUM = config("optimizer_momentum", default= 0.9)
     OPTIMIZER_ADDITIONAL_METRICS = config("optimizer_additional_metrics", default= ["accuracy"])
-    OPTIMIZER = config("optimizer", default= SGD(learning_rate=lr_schedule, momentum=optimizer_momentum))
+    OPTIMIZER = config("optimizer", default= SGD(learning_rate=LR_SCHEDULE, momentum=OPTIMIZER_MOMENTUM))
     TENSORBOARD = config("tensorboard", default=TensorBoard(log_dir=os.path.join(os.getcwd(), "logs"),histogram_freq=1,write_images=True))
     CHECKPOINT = config("checkpoint",default= ModelCheckpoint(os.path.join(os.getcwd(), "model_checkpoint"),save_freq="epoch"))
     CALLBACKS = config("callbacks", default=[TENSORBOARD,CHECKPOINT])

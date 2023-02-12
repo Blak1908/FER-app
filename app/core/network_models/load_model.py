@@ -27,8 +27,8 @@ def _load(checkpoint_path):
     return checkpoint
 
 
-if not os.path.exists('app/weights'):
-    os.mkdir('app/weights')
+if not os.path.exists('weights'):
+    os.mkdir('weights')
 
 def load_resnet_model(weights_path):
     model = model_ResNet.init_ResNet_model()
