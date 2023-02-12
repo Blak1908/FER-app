@@ -32,6 +32,7 @@ class Setting(BaseSettings):
     TENSORBOARD = config("tensorboard")
     CHECKPOINT = config("checkpoint")
     CALLBACKS = config("callbacks")
+    SHORTCUT_TYPE = config("shortcut_type")
 
 
 
