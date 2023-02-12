@@ -4,3 +4,4 @@ venv-fer/*
 .vscode/*
 .DS_Store/*
 weights/*
+app/core/__pycache__/*
