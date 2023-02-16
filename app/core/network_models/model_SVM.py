@@ -1,7 +1,8 @@
+import pickle
 import sys
-import os 
 
 cwd = os.getcwd()
+
 
 def get_root_project(cwd):
     user_path = ''
@@ -18,9 +19,22 @@ user_path = get_root_project(cwd)
 sys.path.append(user_path)
 
 from app.core.settings import get_setting
-from app.core.network_models import model_SVM
+from app.core.network_models import model_AlexNet, model_ResNet, model_VGGNet
 
-def load_svm_model():
-    svm_model = model_SVM()
+
+
+
+settings = get_setting()
+
+
+
+svm_model_path = settings.MODEL_SVM_PATH
+
+
+
+def SVM():
+    # Combine the predictions of the three models
+    with open(svm_model_path, 'rb') as f:
+        svm_model = pickle.load(f)
     return svm_model
-
+        

@@ -34,10 +34,10 @@ class Settings(BaseSettings):
     CHECKPOINT = config("checkpoint",default= ModelCheckpoint(os.path.join(os.getcwd(), "model_checkpoint"),save_freq="epoch"))
     CALLBACKS = config("callbacks", default=[TENSORBOARD,CHECKPOINT])
     SHORTCUT_TYPE = config("shortcut_type", default='identity')
-    MODEL_RESNET = config("model_resnet", default='weights/resnet.h5')
-    MODEL_ALEXNET =config("model_alexnet", default='weights/alexnet.h5')
-    MODEL_VGGNET = config("model_vggnet", default='weights/vggnet.h5')
-
+    MODEL_RESNET_PATH = config("model_resnet_path", default='weights/resnet.h5')
+    MODEL_ALEXNET_PATH =config("model_alexnet_path", default='weights/alexnet.h5')
+    MODEL_VGGNET_PATH = config("model_vggnet_path", default='weights/vggnet.h5')
+    MODEL_SVM_PATH = config("model_svm_path", default="weights/svm_model.pkl")
 
 
 
