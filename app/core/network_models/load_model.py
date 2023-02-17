@@ -18,9 +18,14 @@ user_path = get_root_project(cwd)
 sys.path.append(user_path)
 
 from app.core.settings import get_setting
-from app.core.network_models import model_SVM
+from app.core.network_models import model_SVM, model_AlexNet, model_ResNet, model_VGGNet
 
-def load_svm_model():
-    svm_model = model_SVM()
-    return svm_model
+def load_models(model_name):
+    if model_name =='alexnet':
+        return model_AlexNet()
+    elif model_name == 'vggnet':
+        return model_VGGNet()
+    elif model_name == 'resnet':
+        return model_ResNet()
+    return model_SVM()
 

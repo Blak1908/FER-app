@@ -2,6 +2,8 @@ Dataset/*
 Project-AI-Research/*
 venv-fer/*
 .vscode/*
-.DS_Store/*
 weights/*
 app/core/__pycache__/*
+app/.DS_Store
+app/core/.DS_Store
+.DS_Store
