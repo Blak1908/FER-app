@@ -30,7 +30,7 @@ settings = get_setting()
 MODEL_RESNET_PATH = settings.MODEL_RESNET_PATH
 MODEL_ALEXNET_PATH = settings.MODEL_ALEXNET_PATH
 MODEL_VGGNET_PATH  = settings.MODEL_VGGNET_PATH
-
+MOODEL_SVM_PATH = settings.MODEL_SVM_PATH
 
 
 label_dict = {0:'Angry',1:'Disgust',2:'Fear',3:'Happy',4:'Neutral',5:'Sad',6:'Surprise'}
@@ -40,12 +40,13 @@ def predict(img_dir):
     model_AlexNet = load_models('alexnet')
     model_VGGNet = load_models('vggnet')
     model_ResNet = load_models('resnet')
+    model_SVM = load_models("")
     
     # Load model weights
     model_AlexNet.load_weights(MODEL_ALEXNET_PATH)
     model_VGGNet.load_weights(MODEL_VGGNET_PATH)
     model_ResNet.load_weights(MODEL_RESNET_PATH)
-    
+    model_SVM.load_weights(MOODEL_SVM_PATH)
     # Load and preprocess the test image
     img = image.load_img(img_dir, target_size=(48, 48))
     img = image.img_to_array(img)
@@ -62,9 +63,8 @@ def predict(img_dir):
     
     
     # Use the SVM model to predict the class label
-    svm_model = SVC(kernel='linear')
     
-    svm_pred = svm_model.predict(combined_pred)
+    svm_pred = model_SVM.predict(combined_pred)
     
     predicted_label = label_dict[svm_pred[0]]
     return predicted_label
