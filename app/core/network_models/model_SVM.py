@@ -1,5 +1,5 @@
-import pickle
-import sys
+import pickle, sys, os
+from sklearn.externals import joblib
 
 cwd = os.getcwd()
 
@@ -19,22 +19,21 @@ user_path = get_root_project(cwd)
 sys.path.append(user_path)
 
 from app.core.settings import get_setting
-from app.core.network_models import model_AlexNet, model_ResNet, model_VGGNet
-
-
+from app.core.network_models.load_model import load_models
+from sklearn.svm import SVC
 
 
 settings = get_setting()
 
+MODE_SVM_PATH = settings.MODEL_SVM_PATH
 
-
-svm_model_path = settings.MODEL_SVM_PATH
 
 
 
 def SVM():
-    # Combine the predictions of the three models
-    with open(svm_model_path, 'rb') as f:
-        svm_model = pickle.load(f)
+    svm_model = SVC(kernel='linear')
+    # Load the SVM model
+    with open(MODE_SVM_PATH,'wb') as f:
+        pickle.dump(svm_model,f)   
     return svm_model
         

@@ -1,5 +1,5 @@
 import sys
-import os 
+import os , pickle
 
 cwd = os.getcwd()
 
@@ -46,7 +46,9 @@ def predict(img_dir):
     model_AlexNet.load_weights(MODEL_ALEXNET_PATH)
     model_VGGNet.load_weights(MODEL_VGGNET_PATH)
     model_ResNet.load_weights(MODEL_RESNET_PATH)
-    model_SVM.load_weights(MOODEL_SVM_PATH)
+    
+        
+
     # Load and preprocess the test image
     img = image.load_img(img_dir, target_size=(48, 48))
     img = image.img_to_array(img)
