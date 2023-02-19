@@ -2,9 +2,8 @@
 import tensorflow
 import os
 import sys
-import tensorflow
-from keras import Model
-from keras.layers import Add, GlobalAveragePooling2D,Dense, Flatten, Conv2D, Lambda,Input , BatchNormalization, Activation
+from tensorflow.keras import Model
+from tensorflow.keras.layers import Add, GlobalAveragePooling2D,Dense, Flatten, Conv2D, Lambda,Input , BatchNormalization, Activation
 
 
 cwd = os.getcwd()
@@ -25,7 +24,7 @@ sys.path.append(user_path)
 
 from app.core.settings import get_settings 
 
-settings  = get_settings ()
+settings  = get_settings()
 
 def residual_block(x, number_of_filters, match_filter_size=False):
 
