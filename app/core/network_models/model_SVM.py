@@ -20,7 +20,7 @@ sys.path.append(user_path)
 
 from app.core.settings import get_setting
 from app.core.network_models.load_model import load_models
-from sklearn.svm import SVC
+from sklearn.svm import SVC 
 
 
 settings = get_setting()

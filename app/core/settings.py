@@ -3,7 +3,7 @@ from pydantic import BaseSettings
 from starlette.config import Config
 from tensorflow.keras.losses import CategoricalCrossentropy
 from tensorflow.keras.optimizers import schedules
-from tensorflow.keras.optimizers.experimental import SGD
+from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 from tensorflow.keras import initializers
 config  = Config("app/environment/environment.env")
@@ -38,7 +38,6 @@ class Settings(BaseSettings):
     MODEL_ALEXNET_PATH =config("model_alexnet_path", default='weights/alexnet.h5')
     MODEL_VGGNET_PATH = config("model_vggnet_path", default='weights/vggnet.h5')
     MODEL_SVM_PATH = config("model_svm_path", default="weights/svm_model.pkl")
-
 
 
 def get_setting():
