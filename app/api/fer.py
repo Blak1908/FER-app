@@ -33,7 +33,7 @@ def first_api_test():
     return {'hello': 'world'}
 
 
-@app.post('/predict')
+@app.post('/fer')
 def predict(img):
     emotion = predict(img)
     return {'Result predict: ': emotion}

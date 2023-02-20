@@ -84,7 +84,7 @@ def model_base(shp):
     # Define model structure
     # logits are returned because Softmax is pushed to loss function.
     inputs = Input(shape=shp)
-    x = Conv2D(settings .N, kernel_size=(3,3),\
+    x = Conv2D(settings.N, kernel_size=(3,3),\
         strides=(1,1), kernel_initializer=initializer, padding="same")(inputs)
     x = BatchNormalization()(x)
     x = Activation("relu")(x)
