@@ -22,9 +22,9 @@ user_path = get_root_project(cwd)
 
 sys.path.append(user_path)
 
-from app.core.settings import get_settings 
+from app.core.settings import Settings 
 
-settings  = get_settings()
+settings  = Settings()
 
 def residual_block(x, number_of_filters, match_filter_size=False):
 

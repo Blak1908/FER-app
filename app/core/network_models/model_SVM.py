@@ -1,5 +1,4 @@
 import pickle, sys, os
-from sklearn.externals import joblib
 
 cwd = os.getcwd()
 
@@ -18,12 +17,12 @@ user_path = get_root_project(cwd)
 
 sys.path.append(user_path)
 
-from app.core.settings import get_setting
-from app.core.network_models.load_model import load_models
+from settings import Settings
+from load_model import load_models
 from sklearn.svm import SVC 
 
 
-settings = get_setting()
+settings = Settings()
 
 MODE_SVM_PATH = settings.MODEL_SVM_PATH
 

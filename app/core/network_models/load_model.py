@@ -17,10 +17,11 @@ user_path = get_root_project(cwd)
 
 sys.path.append(user_path)
 
-from app.core.settings import get_setting
+from app.core.settings import Settings
 from app.core.network_models import model_SVM, model_AlexNet, model_ResNet, model_VGGNet
 
-settings = get_setting()
+settings = Settings()
+
 WIDTH = settings.WIDTH
 HEIGH = settings.HEIGHT
 CHANNELS = settings.CHANNELS

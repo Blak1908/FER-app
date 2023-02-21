@@ -1,6 +1,5 @@
 import sys
 import os , pickle
-
 cwd = os.getcwd()
 
 def get_root_project(cwd):
@@ -16,16 +15,15 @@ user_path = get_root_project(cwd)
 
 
 sys.path.append(user_path)
-
-from app.core.settings import get_setting
-from app.core.network_models.load_model import load_models
+from settings import Settings
+from network_models.load_model import load_models
 
 
 import numpy as np
 from tensorflow.keras.preprocessing import image
 from sklearn.svm import SVC
 
-settings = get_setting()
+settings = Settings()
 
 MODEL_RESNET_PATH = settings.MODEL_RESNET_PATH
 MODEL_ALEXNET_PATH = settings.MODEL_ALEXNET_PATH
