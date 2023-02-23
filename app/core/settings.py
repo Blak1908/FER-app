@@ -6,7 +6,7 @@ from tensorflow.keras.optimizers import schedules, SGD
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 from tensorflow.keras import initializers
 
-
+config = Config("app/environment/environment.env")
 class Settings(BaseSettings):
     environment: str = os.getenv("BUILD_ENVIRONMENT", "DEV")
     print("========= environment =========: ", environment)
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     INIT_FM_DIM = config("init_fm_dim", default= 64)
     MAXIMUM_NUMBER_ITERATIONS = config("maximum_number_iterations", default= 100)
     LOSS = config("loss", default= tf.keras.losses.CategoricalCrossentropy(from_logits=True))
-    BOUNDARIES = config("boundaries", default= [32000, 48000])
+    BOUNDARIES = config("boundaries", default= [32000, 48000, 64000])
     VALUES = config("values", default= [0.1, 0.01, 0.001])
     LR_SCHEDULE = config("lr_schedule", default= schedules.PiecewiseConstantDecay(BOUNDARIES, VALUES))
     INITIALIZER = config("initializer", default= initializers.HeNormal())

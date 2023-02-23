@@ -1,5 +1,5 @@
 from settings import Settings
-from network_models.load_model import load_models
+from network_models.load_model import load_model
 
 
 import numpy as np

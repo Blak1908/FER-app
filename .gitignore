@@ -7,3 +7,4 @@ app/core/__pycache__/*
 app/.DS_Store
 app/core/.DS_Store
 .DS_Store
+app/core/network_models/__pycache__/*
