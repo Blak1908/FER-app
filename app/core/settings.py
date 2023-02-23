@@ -1,12 +1,31 @@
 import os
+import tensorflow as tf
 from pydantic import BaseSettings
 from starlette.config import Config
-import tensorflow as tf
 from tensorflow.keras.optimizers import schedules, SGD
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 from tensorflow.keras import initializers
 
+
+
+
 config = Config("app/environment/environment.env")
+
+
+def convert_toList_int(data):
+    result = list()
+    data = data.split(" ")
+    for i in data:
+        result.append(int(i))
+    return result
+
+def convert_toList_float(data):
+    result = list()
+    data = data.split(" ")
+    for i in data:
+        result.append(float(i))
+    return result
+
 class Settings(BaseSettings):
     environment: str = os.getenv("BUILD_ENVIRONMENT", "DEV")
     print("========= environment =========: ", environment)
@@ -22,11 +41,11 @@ class Settings(BaseSettings):
     INIT_FM_DIM = config("init_fm_dim", default= 64)
     MAXIMUM_NUMBER_ITERATIONS = config("maximum_number_iterations", default= 100)
     LOSS = config("loss", default= tf.keras.losses.CategoricalCrossentropy(from_logits=True))
-    BOUNDARIES = config("boundaries", default= [32000, 48000, 64000])
-    VALUES = config("values", default= [0.1, 0.01, 0.001])
+    BOUNDARIES = convert_toList_int(config("boundaries", default= [32000, 48000]))
+    VALUES = convert_toList_float(config("values", default= [0.1, 0.01, 0.001]))
     LR_SCHEDULE = config("lr_schedule", default= schedules.PiecewiseConstantDecay(BOUNDARIES, VALUES))
     INITIALIZER = config("initializer", default= initializers.HeNormal())
-    OPTIMIZER_MOMENTUM = config("optimizer_momentum", default= 0.9)
+    OPTIMIZER_MOMENTUM = float(config("optimizer_momentum", default= 0.9))
     OPTIMIZER_ADDITIONAL_METRICS = config("optimizer_additional_metrics", default= ["accuracy"])
     OPTIMIZER = config("optimizer", default= SGD(learning_rate=LR_SCHEDULE, momentum=OPTIMIZER_MOMENTUM))
     TENSORBOARD = config("tensorboard", default=TensorBoard(log_dir=os.path.join(os.getcwd(), "logs"),histogram_freq=1,write_images=True))
