@@ -18,10 +18,10 @@ label_dict = {0:'Angry',1:'Disgust',2:'Fear',3:'Happy',4:'Neutral',5:'Sad',6:'Su
 
 def predict(img_dir):
     # Load the model from MODEL PATH
-    model_AlexNet = load_models('alexnet')
-    model_VGGNet = load_models('vggnet')
-    model_ResNet = load_models('resnet')
-    model_SVM = load_models("")
+    model_AlexNet = load_model('alexnet')
+    model_VGGNet = load_model('vggnet')
+    model_ResNet = load_model('resnet')
+    model_SVM = load_model("")
     
     # Load model weights
     model_AlexNet.load_weights(MODEL_ALEXNET_PATH)
