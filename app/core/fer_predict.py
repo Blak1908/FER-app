@@ -1,6 +1,5 @@
 from settings import Settings
-from network_models.load_model import load_model
-
+from app.core.network_models import model_SVM, model_AlexNet, model_ResNet, model_VGGNet
 
 import numpy as np
 from tensorflow.keras.preprocessing import image
@@ -12,24 +11,30 @@ MODEL_RESNET_PATH = settings.MODEL_RESNET_PATH
 MODEL_ALEXNET_PATH = settings.MODEL_ALEXNET_PATH
 MODEL_VGGNET_PATH  = settings.MODEL_VGGNET_PATH
 MOODEL_SVM_PATH = settings.MODEL_SVM_PATH
+WIDTH = settings.WIDTH
+HEIGH = settings.HEIGHT
+CHANNELS = settings.CHANNELS
+NUM_CLASSES = settings.NUM_CLASSES
+
+input_shape = (WIDTH, HEIGH, CHANNELS)
+num_classes = NUM_CLASSES
 
 
 label_dict = {0:'Angry',1:'Disgust',2:'Fear',3:'Happy',4:'Neutral',5:'Sad',6:'Surprise'}
 
-def predict(img_dir):
-    # Load the model from MODEL PATH
-    model_AlexNet = load_model('alexnet')
-    model_VGGNet = load_model('vggnet')
-    model_ResNet = load_model('resnet')
-    model_SVM = load_model("")
-    
-    # Load model weights
-    model_AlexNet.load_weights(MODEL_ALEXNET_PATH)
-    model_VGGNet.load_weights(MODEL_VGGNET_PATH)
-    model_ResNet.load_weights(MODEL_RESNET_PATH)
-    
-        
+# Define models 
+model_AlexNet = model_AlexNet.AlexNet(input_shape,num_classes)
+model_VGGNet =  model_VGGNet.VGGNet(input_shape,num_classes)
+model_ResNet = model_ResNet.init_ResNet_model()
+model_SVM = model_SVM.SVM()
 
+# Load model weights
+model_AlexNet.load_weights(MODEL_ALEXNET_PATH)
+model_VGGNet.load_weights(MODEL_VGGNET_PATH)
+model_ResNet.load_weights(MODEL_RESNET_PATH)
+
+
+def predict(img_dir):   
     # Load and preprocess the test image
     img = image.load_img(img_dir, target_size=(48, 48))
     img = image.img_to_array(img)
