@@ -1,4 +1,4 @@
-from settings import Settings
+from app.core.settings import Settings
 from app.core.network_models import model_SVM, model_AlexNet, model_ResNet, model_VGGNet
 
 import numpy as np

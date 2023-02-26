@@ -1,4 +1,4 @@
-from settings import Settings
+from app.core.settings import Settings
 import pickle
 from sklearn.svm import SVC 
 
