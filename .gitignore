@@ -12,3 +12,4 @@ app/api/__pycache__/
 app/core/__pycache__/*
 happy.jpg
 happy.jpg:Zone.Identifier
+datasets/

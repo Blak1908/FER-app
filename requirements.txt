@@ -1,11 +1,14 @@
 pandas
 scikit-learn
-tensorflow
 boto3
 pypyr
 python-dotenv
+opencv-python
 fastapi
 uvicorn
 gunicorn
 pillow
 python-multipart
+torch 
+torchvision 
+torchaudio
