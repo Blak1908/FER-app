@@ -1,6 +1,0 @@
-tensorflow-macos
-tensorflow-metal
-bayesian-optimization
-gym
-kaggle
-pylance --upgrade

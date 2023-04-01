@@ -14,6 +14,6 @@ happy.jpg
 happy.jpg:Zone.Identifier
 datasets/
 utils_python/
-app/core/train_model/model_saved/
-/home/dattran/datadrive/FER-app/app/core/train_model/__pycache__/
+app/core/train_model/model_saved/*
+app/core/train_model/__pycache__/*
 
