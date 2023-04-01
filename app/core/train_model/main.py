@@ -24,7 +24,8 @@ def parse_args():
     parser.add_argument('--continuous_loss_type', type=str, default='Smooth L1', choices=['L2', 'Smooth L1'], help='type of continuous loss')
     parser.add_argument('--discrete_loss_weight_type', type=str, default='dynamic', choices=['dynamic', 'mean', 'static'], help='weight policy for discrete loss')
     parser.add_argument('--epochs', type=int, default=15)
-    parser.add_argument('--batch_size', type=int, default=52) # use batch size = double(categorical emotion classes)
+    parser.add_argument('--batch_size', type=int, default=26) # use batch size = double(categorical emotion classes)
+    parser.add_argument('--save_interval', type=int, default=50, help='Saving the model after every n epochs')
     # Generate args
     args = parser.parse_args()
     return args
@@ -95,4 +96,4 @@ if __name__ == '__main__':
 
 
 
-# python app/core/train_model/main.py --mode train --data_path datasets/emotic_pre --experiment_path app/core/train_model/model_saved
+# python app/core/train_model/main.py --mode train --save_interval 1 --data_path datasets/emotic_pre --experiment_path app/core/train_model/model_saved
