@@ -96,4 +96,6 @@ if __name__ == '__main__':
 
 
 
-# python app/core/train_model/main.py --mode train --save_interval 1 --data_path datasets/emotic_pre --experiment_path app/core/train_model/model_saved
+# python app/core/train_model/main.py --mode train --save_interval 2 --data_path datasets/emotic_pre --experiment_path app/core/train_model/model_saved
+
+# screen -L -Logfile app/core/train_model/model_saved/logs/exp1.log python app/core/train_model/main.py --mode train --save_interval 2 --data_path datasets/emotic_pre --experiment_path app/core/train_model/model_saved

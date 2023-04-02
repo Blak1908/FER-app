@@ -53,7 +53,7 @@ def train_data(opt, scheduler, models, device, train_loader, val_loader, disc_lo
         emotic_model.train()
         model_context.train()
         model_body.train()
-  
+        
         #train models for one epoch 
         for images_context, images_body, labels_cat, labels_cont in iter(train_loader):
             images_context = images_context.to(device)
@@ -79,14 +79,8 @@ def train_data(opt, scheduler, models, device, train_loader, val_loader, disc_lo
             loss.backward()
             opt.step()
 
-        if e % 1 == 0:
-            total_batches_train = float(len(train_loader))
-            avg_loss = float(running_loss / total_batches_train)
-            avg_cat_loss = float(running_cat_loss / total_batches_train)
-            avg_cont_loss = float(running_cont_loss / total_batches_train)
-
-            print(f'epoch = {e} train loss = {avg_loss:.2f} cat loss = {avg_cat_loss:.2f} cont loss = {avg_cont_loss:.2f}')
-
+        if e % 1 == 0: 
+            print ('epoch = %d loss = %.4f cat loss = %.4f cont_loss = %.4f' %(e, running_loss, running_cat_loss, running_cont_loss))
 
         train_writer.add_scalar('losses/total_loss', running_loss, e)
         train_writer.add_scalar('losses/categorical_loss', running_cat_loss, e)
@@ -121,27 +115,11 @@ def train_data(opt, scheduler, models, device, train_loader, val_loader, disc_lo
                 running_cont_loss += cont_loss_batch.item()
 
         if e % 1 == 0:
-            total_batches_val = float(len(val_loader))
-            avg_loss = float(running_loss / total_batches_val)
-            avg_cat_loss = float(running_cat_loss / total_batches_val)
-            avg_cont_loss = float(running_cont_loss / total_batches_val)
-
-            print(f'epoch = {e} validation loss = {avg_loss:.2f} cat loss = {avg_cat_loss:.2f} cont loss = {avg_cont_loss:.2f}')
-
-            
-            
+            print ('epoch = %d validation loss = %.4f cat loss = %.4f cont loss = %.4f ' %(e, running_loss, running_cat_loss, running_cont_loss))
+        
         val_writer.add_scalar('losses/total_loss', running_loss, e)
         val_writer.add_scalar('losses/categorical_loss', running_cat_loss, e)
         val_writer.add_scalar('losses/continuous_loss', running_cont_loss, e)
-        
-        # if (e + 1) % args.save_interval == 0:
-        #     emotic_model.to("cpu")
-        #     model_context.to("cpu")
-        #     model_body.to("cpu")
-        #     torch.save(emotic_model, os.path.join(model_path, f'model_emotic{e+1}.pth'))
-        #     torch.save(model_context, os.path.join(model_path, f'model_context{e+1}.pth'))
-        #     torch.save(model_body, os.path.join(model_path, f'model_body{e+1}.pth'))
-        #     print(f'Models have been saved at iter: {e+1} th')
         
         stop = datetime.datetime.now()
         duration = stop - start
@@ -150,7 +128,15 @@ def train_data(opt, scheduler, models, device, train_loader, val_loader, disc_lo
         print(f"Duration: {duration_in_seconds:.2f} seconds")
             
         scheduler.step()
-    
+        
+    print ('completed training')
+    emotic_model.to("cpu")
+    model_context.to("cpu")
+    model_body.to("cpu")
+    torch.save(emotic_model, os.path.join(model_path, 'model_emotic1.pth'))
+    torch.save(model_context, os.path.join(model_path, 'model_context1.pth'))
+    torch.save(model_body, os.path.join(model_path, 'model_body1.pth'))
+    print ('saved models')
 
 
 
