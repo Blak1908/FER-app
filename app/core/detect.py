@@ -2,6 +2,7 @@ import argparse
 import cv2
 import numpy as np 
 import os
+import platform
 from pathlib import Path
 
 
@@ -12,21 +13,9 @@ from app.core.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, Loa
 from app.core.train.emotic import Emotic 
 from app.core.utils.inference import infer
 from app.core.utils.yolo_utils import prepare_yolo, rescale_boxes, non_max_suppression
-from app.core.utils.general import check_file, increment_path, check_img_size
+from app.core.utils.general import check_file, increment_path, check_img_size, check_imshow, Profile
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu', type=int, default=0, help='gpu id')
-    parser.add_argument('--experiment_path', type=str, required=True, help='Path of experiment files (results, models, logs)')
-    parser.add_argument('--model_dir', type=str, default='models', help='Folder to access the models')
-    parser.add_argument('--result_dir', type=str, default='results', help='Path to save the results')
-    parser.add_argument('--inference_file', type=str, help='Text file containing image context paths and bounding box')
-    parser.add_argument('--source', help='0 camera, video file path, image file path')
-    parser.add_argument('--imgsz',default=(640, 640), help='0 camera, video file path, image file path')
 
-    # Generate args
-    args = parser.parse_args()
-    return args
 
 
 def get_bbox(yolo_model, device, image_context, yolo_image_size=416, conf_thresh=0.8, nms_thresh=0.4):
@@ -104,7 +93,7 @@ def yolo_infer(images_list, result_path, model_path, context_norm, body_norm, in
     print ('completed inference for image %d'  %(idx))
 
 
-def yolo_video(video_file, result_path, model_path, context_norm, body_norm, ind2cat, ind2vad, args):
+def detect(result_path, model_path, context_norm, body_norm, ind2cat, ind2vad, args):
   ''' Perform inference on a video. First yolo model is used to obtain bounding boxes of persons in every frame.
   After that the emotic model is used to obtain categoraical and continuous emotion predictions. 
   :param video_file: Path of video file. 
@@ -143,38 +132,55 @@ def yolo_video(video_file, result_path, model_path, context_norm, body_norm, ind
 
   
   imgsz = args.imgsz
+  if webcam:
+        view_img = check_imshow()
+        dataset = LoadStreams(sources=source, img_size=imgsz, stride=args.stride, auto=args.pt, vid_stride=args.vid_stride)
+        bs = len(dataset)
+  elif screenshot:
+      dataset = LoadScreenshots(source, img_size=imgsz, stride=args.stride, auto=args.pt)
+  else:
+      dataset = LoadImages(source, img_size=imgsz, stride=args.stride, auto=args.pt, vid_stride=args.vid_stride)
+  vid_path, vid_writer = [None] * bs, [None] * bs
 
-  video_stream = cv2.VideoCapture(video_file)
-  writer = None
-
-  print ('Starting testing on video')
-  while True:
-    (grabbed, frame) = video_stream.read()
-    if not grabbed:
-      break
-    image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-    try: 
-      bbox_yolo = get_bbox(yolo, device, image_context)
-      for pred_idx, pred_bbox in enumerate(bbox_yolo):
-        pred_cat, pred_cont = infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models, image_context=image_context, bbox=pred_bbox, to_print=False)
-        write_text_vad = list()
-        for continuous in pred_cont:
-          write_text_vad.append(str('%.1f' %(continuous)))
-        write_text_vad = 'vad ' + ' '.join(write_text_vad) 
-        image_context = cv2.rectangle(image_context, (pred_bbox[0], pred_bbox[1]),(pred_bbox[2] , pred_bbox[3]), (255, 0, 0), 3)
-        cv2.putText(image_context, write_text_vad, (pred_bbox[0], pred_bbox[1] - 5), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
-        for i, emotion in enumerate(pred_cat):
-          cv2.putText(image_context, emotion, (pred_bbox[0], pred_bbox[1] + (i+1)*12), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
-    except Exception:
-      pass
-    if writer is None:
-      fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-      writer = cv2.VideoWriter(os.path.join(result_path, 'result_vid.avi'), fourcc, 30, (image_context.shape[1], image_context.shape[0]), True)  
-    writer.write(cv2.cvtColor(image_context, cv2.COLOR_RGB2BGR))
-  writer.release()
-  video_stream.release() 
-  print ('Completed video')
+  seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
+  for path, frame, im0s, vid_cap, s in dataset:
+      with dt[0]:        
+          image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+          
+      pred = []
+      
+      # Inference
+      with dt[1]:
+          try: 
+            bbox_yolo = get_bbox(yolo, device, image_context)
+            for pred_idx, pred_bbox in enumerate(bbox_yolo):
+              
+              if webcam:  # batch_size >= 1
+                p, im0, frame = path[i], im0s[i].copy(), dataset.count
+                s += f'{i}: '
+              else:
+                p, im0, frame = path, im0s.copy(), getattr(dataset, 'frame', 0)
+                
+              pred_cat, pred_cont = infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models, image_context=image_context, bbox=pred_bbox, to_print=False)
+              write_text_vad = list()
+              for continuous in pred_cont:
+                write_text_vad.append(str('%.1f' %(continuous)))
+              write_text_vad = 'vad ' + ' '.join(write_text_vad) 
+              image_context = cv2.rectangle(image_context, (pred_bbox[0], pred_bbox[1]),(pred_bbox[2] , pred_bbox[3]), (255, 0, 0), 3)
+              cv2.putText(image_context, write_text_vad, (pred_bbox[0], pred_bbox[1] - 5), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
+              for i, emotion in enumerate(pred_cat):
+                cv2.putText(image_context, emotion, (pred_bbox[0], pred_bbox[1] + (i+1)*12), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
+                
+                if view_img:
+                  if platform.system() == 'Linux' and p not in windows:
+                      windows.append(p)
+                      cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
+                      cv2.resizeWindow(str(p), image_context.shape[1], image_context.shape[0])
+                  cv2.imshow(str(p), image_context)
+                  cv2.waitKey(1)  # 1 millisecond
+                  
+          except Exception:
+            pass
 
 
 def check_paths(args):
@@ -197,6 +203,23 @@ def check_paths(args):
   if not os.path.exists(result_path):
     os.makedirs(result_path)
   return result_path, model_path
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--gpu', type=int, default=0, help='gpu id')
+    parser.add_argument('--experiment_path', type=str, required=True, help='Path of experiment files (results, models, logs)')
+    parser.add_argument('--model_dir', type=str, default='models', help='Folder to access the models')
+    parser.add_argument('--result_dir', type=str, default='results', help='Path to save the results')
+    parser.add_argument('--inference_file', type=str, help='Text file containing image context paths and bounding box')
+    parser.add_argument('--source', help='0 camera, video file path, image file path')
+    parser.add_argument('--imgsz',default=(640, 640), help='0 camera, video file path, image file path')
+    parser.add_argument('--stride',default=32, help='The number of frame per thread')
+    parser.add_argument('--vid_stride',default=1, help='video stride')
+    parser.add_argument('--pt',default=True, help='video stride')
+    # Generate args
+    args = parser.parse_args()
+    return args
 
 if __name__=='__main__':
   args = parse_args()
@@ -223,10 +246,8 @@ if __name__=='__main__':
   body_std = [0.24784276, 0.23621225, 0.2323653]
   context_norm = [context_mean, context_std]
   body_norm = [body_mean, body_std]
-
-  if args.inference_file is not None: 
-    print ('inference over inference file images')
-    yolo_infer(args.inference_file, result_path, model_path, context_norm, body_norm, ind2cat, ind2vad, args)
-  if args.video_file is not None:
-    print ('inference over test video')
-    yolo_video(args.video_file, result_path, model_path, context_norm, body_norm, ind2cat, ind2vad, args)
+  if args.source is not None:
+    print (f'inference over source: {args.source}')
+    detect(result_path, model_path, context_norm, body_norm, ind2cat, ind2vad, args)
+  else:
+    print('source input invalid !!')
