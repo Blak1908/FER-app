@@ -3,14 +3,16 @@ import cv2
 import numpy as np 
 import os
 from pathlib import Path
-from app.core.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
+
 
 import torch 
 from torchvision import transforms
 
+from app.core.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
 from app.core.train.emotic import Emotic 
 from app.core.utils.inference import infer
 from app.core.utils.yolo_utils import prepare_yolo, rescale_boxes, non_max_suppression
+from app.core.utils.general import check_file, increment_path, check_img_size
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -20,6 +22,8 @@ def parse_args():
     parser.add_argument('--result_dir', type=str, default='results', help='Path to save the results')
     parser.add_argument('--inference_file', type=str, help='Text file containing image context paths and bounding box')
     parser.add_argument('--source', help='0 camera, video file path, image file path')
+    parser.add_argument('--imgsz',default=(640, 640), help='0 camera, video file path, image file path')
+
     # Generate args
     args = parser.parse_args()
     return args
@@ -134,6 +138,11 @@ def yolo_video(video_file, result_path, model_path, context_norm, body_norm, ind
   screenshot = source.lower().startswith('screen')
   if is_url and is_file:
       source = check_file(source)  # download
+      
+  save_dir = increment_path(Path(args.results_dir) / args.source)  # increment run
+
+  
+  imgsz = args.imgsz
 
   video_stream = cv2.VideoCapture(video_file)
   writer = None
