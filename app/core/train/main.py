@@ -3,7 +3,7 @@ import os
 
 from emotic import Emotic
 from train import train_emotic
-from inference import inference_emotic
+from app.core.utils.inference import inference_emotic
 
 def parse_args():
     parser = argparse.ArgumentParser()
