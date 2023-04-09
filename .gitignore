@@ -18,3 +18,4 @@ app/core/train_model/model_saved/*
 app/core/train_model/__pycache__/*
 app/core/utils/__pycache__/*
 app/__pycache__/*
+.vscode/*
