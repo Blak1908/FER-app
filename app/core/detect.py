@@ -220,6 +220,7 @@ def parse_args():
     # Generate args
     args = parser.parse_args()
     return args
+# python app/core/detect.py --source 0 --inference_file debug_exp/inference_file.txt --experiment_path weights/model_saved 
 
 if __name__=='__main__':
   args = parse_args()
