@@ -9,11 +9,9 @@ from pathlib import Path
 import torch 
 from torchvision import transforms
 
-from app.core.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
-from app.core.train.emotic import Emotic 
-from app.core.utils.inference import infer
+from app.core.train import emotic
 from app.core.utils.yolo_utils import prepare_yolo, rescale_boxes, non_max_suppression
-from app.core.utils.general import check_file, increment_path, check_img_size, check_imshow, Profile
+
 
 
 
@@ -62,10 +60,13 @@ def yolo_infer(images_list, result_path, model_path, context_norm, body_norm, in
   yolo = yolo.to(device)
   yolo.eval()
 
+
+  print("Start loading models...")
   thresholds = torch.FloatTensor(np.load(os.path.join(result_path, 'val_thresholds.npy'))).to(device) 
   model_context = torch.load(os.path.join(model_path,'model_context1.pth')).to(device)
   model_body = torch.load(os.path.join(model_path,'model_body1.pth')).to(device)
   emotic_model = torch.load(os.path.join(model_path,'model_emotic1.pth')).to(device)
+  
   models = [model_context, model_body, emotic_model]
 
   with open(images_list, 'r') as f:
@@ -93,18 +94,9 @@ def yolo_infer(images_list, result_path, model_path, context_norm, body_norm, in
     print ('completed inference for image %d'  %(idx))
 
 
+
 def detect(result_path, model_path, context_norm, body_norm, ind2cat, ind2vad, args):
-  ''' Perform inference on a video. First yolo model is used to obtain bounding boxes of persons in every frame.
-  After that the emotic model is used to obtain categoraical and continuous emotion predictions. 
-  :param video_file: Path of video file. 
-  :param result_path: Directory path to save the results (output video).
-  :param model_path: Directory path to load models and val_thresholds to perform inference.
-  :param context_norm: List containing mean and std values for context images. 
-  :param body_norm: List containing mean and std values for body images. 
-  :param ind2cat: Dictionary converting integer index to categorical emotion. 
-  :param ind2vad: Dictionary converting integer index to continuous emotion dimension (Valence, Arousal and Dominance).
-  :param args: Runtime arguments.
-  '''  
+
   device = torch.device("cuda:%s" %(str(args.gpu)) if torch.cuda.is_available() else "cpu")
   yolo = prepare_yolo(model_path)
   yolo = yolo.to(device)
@@ -114,73 +106,39 @@ def detect(result_path, model_path, context_norm, body_norm, ind2cat, ind2vad, a
   model_context = torch.load(os.path.join(model_path,'model_context1.pth')).to(device)
   model_body = torch.load(os.path.join(model_path,'model_body1.pth')).to(device)
   emotic_model = torch.load(os.path.join(model_path,'model_emotic1.pth')).to(device)
+
   model_context.eval()
   model_body.eval()
   emotic_model.eval()
   models = [model_context, model_body, emotic_model]
-  
-  source = str(source)
-  save_img = not source.endswith('.txt')  # save inference images
-  is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
-  is_url = source.lower().startswith(('rtsp://', 'rtmp://', 'http://', 'https://'))
-  webcam = source.isnumeric() or source.endswith('.txt') or (is_url and not is_file)
-  screenshot = source.lower().startswith('screen')
-  if is_url and is_file:
-      source = check_file(source)  # download
-      
-  save_dir = increment_path(Path(args.results_dir) / args.source)  # increment run
+
+
+  # Capture frame from camera
+  cv2.ocl.setUseOpenCL(False)
+  cap = cv2.VideoCapture(int(args.source))
+
+  while True:
+    _, frame = cap.read()
+    image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    try: 
+      bbox_yolo = get_bbox(yolo, device, image_context)
+      for pred_idx, pred_bbox in enumerate(bbox_yolo):
+        pred_cat, pred_cont = infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models, image_context=image_context, bbox=pred_bbox, to_print=False)
+        write_text_vad = list()
+        for continuous in pred_cont:
+          write_text_vad.append(str('%.1f' %(continuous)))
+        write_text_vad = 'vad ' + ' '.join(write_text_vad) 
+        image_context = cv2.rectangle(image_context, (pred_bbox[0], pred_bbox[1]),(pred_bbox[2] , pred_bbox[3]), (255, 0, 0), 3)
+        cv2.putText(image_context, write_text_vad, (pred_bbox[0], pred_bbox[1] - 5), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
+        for i, emotion in enumerate(pred_cat):
+          cv2.putText(image_context, emotion, (pred_bbox[0], pred_bbox[1] + (i+1)*12), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
+        cv2.imshow('Emotion Detector',image_context)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+          break  
+    except Exception:
+      pass
 
   
-  imgsz = args.imgsz
-  if webcam:
-        view_img = check_imshow()
-        dataset = LoadStreams(sources=source, img_size=imgsz, stride=args.stride, auto=args.pt, vid_stride=args.vid_stride)
-        bs = len(dataset)
-  elif screenshot:
-      dataset = LoadScreenshots(source, img_size=imgsz, stride=args.stride, auto=args.pt)
-  else:
-      dataset = LoadImages(source, img_size=imgsz, stride=args.stride, auto=args.pt, vid_stride=args.vid_stride)
-  vid_path, vid_writer = [None] * bs, [None] * bs
-
-  seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
-  for path, frame, im0s, vid_cap, s in dataset:
-      with dt[0]:        
-          image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-          
-      pred = []
-      
-      # Inference
-      with dt[1]:
-          try: 
-            bbox_yolo = get_bbox(yolo, device, image_context)
-            for pred_idx, pred_bbox in enumerate(bbox_yolo):
-              
-              if webcam:  # batch_size >= 1
-                p, im0, frame = path[i], im0s[i].copy(), dataset.count
-                s += f'{i}: '
-              else:
-                p, im0, frame = path, im0s.copy(), getattr(dataset, 'frame', 0)
-                
-              pred_cat, pred_cont = infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models, image_context=image_context, bbox=pred_bbox, to_print=False)
-              write_text_vad = list()
-              for continuous in pred_cont:
-                write_text_vad.append(str('%.1f' %(continuous)))
-              write_text_vad = 'vad ' + ' '.join(write_text_vad) 
-              image_context = cv2.rectangle(image_context, (pred_bbox[0], pred_bbox[1]),(pred_bbox[2] , pred_bbox[3]), (255, 0, 0), 3)
-              cv2.putText(image_context, write_text_vad, (pred_bbox[0], pred_bbox[1] - 5), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
-              for i, emotion in enumerate(pred_cat):
-                cv2.putText(image_context, emotion, (pred_bbox[0], pred_bbox[1] + (i+1)*12), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
-                
-                if view_img:
-                  if platform.system() == 'Linux' and p not in windows:
-                      windows.append(p)
-                      cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
-                      cv2.resizeWindow(str(p), image_context.shape[1], image_context.shape[0])
-                  cv2.imshow(str(p), image_context)
-                  cv2.waitKey(1)  # 1 millisecond
-                  
-          except Exception:
-            pass
 
 
 def check_paths(args):
@@ -191,11 +149,7 @@ def check_paths(args):
   if args.inference_file is not None: 
     if not os.path.exists(args.inference_file):
       raise ValueError('inference file does not exist. Please pass a valid inference file')
-  if args.video_file is not None: 
-    if not os.path.exists(args.video_file):
-      raise ValueError('video file does not exist. Please pass a valid video file')
-  if args.inference_file is None and args.video_file is None: 
-    raise ValueError(' both inference file and video file can\'t be none. Please specify one and run again')
+
   model_path = os.path.join(args.experiment_path, args.model_dir)
   if not os.path.exists(model_path):
     raise ValueError('model path %s does not exist. Please pass a valid model_path' %(model_path))
@@ -220,7 +174,7 @@ def parse_args():
     # Generate args
     args = parser.parse_args()
     return args
-# python app/core/detect.py --source 0 --inference_file debug_exp/inference_file.txt --experiment_path weights/model_saved 
+
 
 if __name__=='__main__':
   args = parse_args()
@@ -255,3 +209,4 @@ if __name__=='__main__':
 
 
 
+# python app/detect.py --source 0 --experiment_path /home/dattran/Documents/dattran/FER-app/weights/model_saved
