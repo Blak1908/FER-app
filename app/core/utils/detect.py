@@ -120,10 +120,16 @@ def detect(result_path, model_path, context_norm, body_norm, ind2cat, ind2vad, a
         for continuous in pred_cont:
           write_text_vad.append(str('%.1f' %(continuous)))
         write_text_vad = 'vad ' + ' '.join(write_text_vad) 
+
+        # Draw a retangle into frame
         image_context = cv2.rectangle(image_context, (pred_bbox[0], pred_bbox[1]),(pred_bbox[2] , pred_bbox[3]), (255, 0, 0), 3)
+
+        # Write predict categories into frame
         cv2.putText(image_context, write_text_vad, (pred_bbox[0], pred_bbox[1] - 5), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
         for i, emotion in enumerate(pred_cat):
           cv2.putText(image_context, emotion, (pred_bbox[0], pred_bbox[1] + (i+1)*12), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
+        
+        # Show on the frames have predicted
         cv2.imshow('Emotion Detector',image_context)
         if cv2.waitKey(1) & 0xFF == ord('q'):
           break  
@@ -201,4 +207,4 @@ if __name__=='__main__':
 
 
 
-# python app/detect.py --source 0 --experiment_path /home/dattran/Documents/dattran/FER-app/weights/model_saved
+# python app/core/utils/detect.py --source 0 --experiment_path /home/dattran/Documents/dattran/FER-app/weights/model_saved
