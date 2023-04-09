@@ -19,3 +19,4 @@ app/core/train_model/__pycache__/*
 app/core/utils/__pycache__/*
 app/__pycache__/*
 .vscode/*
+__pycache__/*
