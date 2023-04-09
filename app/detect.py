@@ -2,14 +2,12 @@ import argparse
 import cv2
 import numpy as np 
 import os
-import platform
-from pathlib import Path
 
 
 import torch 
 from torchvision import transforms
 
-from app.core.train import emotic
+from emotic import Emotic
 from app.core.utils.inference import infer
 from app.core.utils.yolo_utils import prepare_yolo, rescale_boxes, non_max_suppression
 
@@ -18,14 +16,7 @@ from app.core.utils.yolo_utils import prepare_yolo, rescale_boxes, non_max_suppr
 
 
 def get_bbox(yolo_model, device, image_context, yolo_image_size=416, conf_thresh=0.8, nms_thresh=0.4):
-  ''' Use yolo to obtain bounding box of every person in context image. 
-  :param yolo_model: Yolo model to obtain bounding box of every person in context image. 
-  :param device: Torch device. Used to send tensors to GPU (if available) for faster processing. 
-  :yolo_image_size: Input image size for yolo model. 
-  :conf_thresh: Confidence threshold for yolo model. Predictions with object confidence > conf_thresh are returned. 
-  :nms_thresh: Non-maximal suppression threshold for yolo model. Predictions with IoU > nms_thresh are returned. 
-  :return: Numpy array of bounding boxes. Array shape = (no_of_persons, 4). 
-  '''
+
   test_transform = transforms.Compose([transforms.ToPILImage(),transforms.ToTensor()])
   image_yolo = test_transform(cv2.resize(image_context, (416, 416))).unsqueeze(0).to(device)
 
