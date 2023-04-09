@@ -10,6 +10,7 @@ import torch
 from torchvision import transforms
 
 from app.core.train import emotic
+from app.core.utils.inference import infer
 from app.core.utils.yolo_utils import prepare_yolo, rescale_boxes, non_max_suppression
 
 
