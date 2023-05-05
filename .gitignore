@@ -20,3 +20,4 @@ app/core/utils/__pycache__/*
 app/__pycache__/*
 .vscode/*
 __pycache__/*
+app/core/temp/

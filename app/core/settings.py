@@ -14,7 +14,8 @@ class Settings(BaseSettings):
     RESULT_PATH = config("result_path", default="")
     ID_MAT =config("id_mat", default="")
     ID_MODEL = config("id_model", default="")                    
-
+    TEMP_PATH = config("temp_path", default="")
+    
 def get_settings():
     settings = Settings()
     return settings
