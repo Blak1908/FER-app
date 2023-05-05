@@ -71,7 +71,6 @@ class EMOTIC():
                     
         except Exception as e:
             print("Error: ", e)
-            pass
         return image_context
 
 emotic_model = EMOTIC(mat_path=MAT_PATH,model_path=MODEL_PATH, device=DEVICE)

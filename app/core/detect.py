@@ -2,7 +2,7 @@ import argparse
 import cv2
 import numpy as np 
 import os
-
+import subprocess
 
 import torch 
 from torchvision import transforms
@@ -16,9 +16,12 @@ settings = get_settings()
 
 modes = settings.MODES
 result_path = settings.RESULT_PATH
+temp_path = settings.TEMP_PATH
 
 if not os.path.exists(result_path):
   os.system(f"mkdir {result_path}")
+if not os.path.exists(temp_path):
+  os.system(f"mkdir {temp_path}")
 
 
 def detect(context_norm, body_norm, ind2cat, ind2vad, args):
@@ -29,35 +32,57 @@ def detect(context_norm, body_norm, ind2cat, ind2vad, args):
     # Capture frame from camera
     cv2.ocl.setUseOpenCL(False)
     cap = cv2.VideoCapture(int(args.source))
-    
-  elif str(args.source).endswith(".mp4"):
-    video_mode = True
-    # capture video
-    cap = cv2.VideoCapture(args.source)
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    height, width = cap.get(cv2.CAP_PROP_FRAME_HEIGHT), cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-    preds = []
-    out = cv2.VideoWriter(result_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
     while True:
       ret, frame = cap.read()
-      image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+      
       if not ret:
         print("End process! ")
         break
       
-      pred = emotic.emotic_model.frame_predict(context_norm ,body_norm, ind2cat, ind2vad, image_context)
+      image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
       
+    
+      pred = emotic.emotic_model.frame_predict(context_norm ,body_norm, ind2cat, ind2vad, image_context)
+
       if camera_mode:                                         
         # Show real-time capture                                         )
         cv2.imshow('Emotion Detector',pred)
         if cv2.waitKey(1) & 0xFF == ord('q'):
           break
-      elif video_mode:
-        out.write(pred)
+    
+  elif str(args.source).endswith(".mp4"):
+    
+    base_name = str(args.source).split('/')[-1]
+    base_name = base_name.split('.')[0]
+    
+    video_mode = True
+    # capture video
+    cap = cv2.VideoCapture(args.source)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    
+    idx = 0 
+    
+    while True:
+      ret, frame = cap.read()
+      
+      if not ret:
+        print("End process! ")
+        break
+      
+      image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+      
+      
+      pred = emotic.emotic_model.frame_predict(context_norm ,body_norm, ind2cat, ind2vad, image_context)
+      
+      cv2.imwrite(f'{temp_path}/{idx+1:06d}.jpg', pred)
+      idx += 1
         
     # Write video prediction
-    if video_mode:    
-      out.release()
+    if video_mode:   
+      cmd_export_video = f'''ffmpeg -framerate {fps} -i {temp_path}/%06d.jpg -c:v libx264 -profile:v high -crf {fps} -pix_fmt yuv420p {result_path}/{base_name}_result.mp4''' 
+      os.system(cmd_export_video)
+      cmd_delete_tmp = f'rm {temp_path}/*.jpg'
+      os.system(cmd_delete_tmp)
       
   else:
     base_name = str(args.source).split('/')[-1]
