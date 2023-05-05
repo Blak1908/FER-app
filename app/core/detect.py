@@ -15,7 +15,7 @@ from app.core.modules import emotic
 settings = get_settings()
 
 modes = settings.MODES
-result_path = settings.MODEL_PATH
+result_path = settings.RESULT_PATH
 
 if not os.path.exists(result_path):
   os.system(f"mkdir {result_path}")
@@ -32,34 +32,51 @@ def detect(context_norm, body_norm, ind2cat, ind2vad, args):
     
   elif str(args.source).endswith(".mp4"):
     video_mode = True
+    # capture video
     cap = cv2.VideoCapture(args.source)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    height, width = cap.get(cv2.CAP_PROP_FRAME_HEIGHT), cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    preds = []
+    out = cv2.VideoWriter(result_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
+    while True:
+      ret, frame = cap.read()
+      image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+      if not ret:
+        print("End process! ")
+        break
+      
+      pred = emotic.emotic_model.frame_predict(context_norm ,body_norm, ind2cat, ind2vad, image_context)
+      
+      if camera_mode:                                         
+        # Show real-time capture                                         )
+        cv2.imshow('Emotion Detector',pred)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+          break
+      elif video_mode:
+        out.write(pred)
+        
+    # Write video prediction
+    if video_mode:    
+      out.release()
+      
   else:
-    image_mode = True
     base_name = str(args.source).split('/')[-1]
     base_name = base_name.split('.')[0]
-    img = cv2.imread(args.source)
-
-  while True:
-    ret, frame = cap.read()
-    image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    if not ret:
-      print("End process! ")
-      break
     
+    # Read image from source
+    img = cv2.imread(args.source)
+    
+    # Convert image original to RGB 
+    image_context = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
+    # Make forward prediction
     pred = emotic.emotic_model.frame_predict(context_norm ,body_norm, ind2cat, ind2vad, image_context)
-
-    preds = []
-    if camera_mode:                                         
-      # Show real-time capture                                         )
-      cv2.imshow('Emotion Detector',pred)
-      if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-    elif video_mode:
-      preds.append(pred)
-
-    else:
-      cv2.imwrite(f"{result_path}/{base_name}.jpg", pred)
-
+    
+    # Write image to result path
+    cv2.imwrite(f"{result_path}/{base_name}.jpg", pred)
+    
+  
+  
 
 def parse_args():
     parser = argparse.ArgumentParser()
