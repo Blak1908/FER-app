@@ -2,13 +2,7 @@ import argparse
 import cv2
 import numpy as np 
 import os
-import subprocess
 
-import torch 
-from torchvision import transforms
-
-from app.core.modules.emotic.utils.inference import infer
-from app.core.modules.emotic.utils.yolo_utils import prepare_yolo, rescale_boxes, non_max_suppression
 from app.core.settings import get_settings
 from app.core.modules import emotic
 
