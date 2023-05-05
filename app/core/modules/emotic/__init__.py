@@ -77,4 +77,4 @@ class EMOTIC():
 emotic_model = EMOTIC(mat_path=MAT_PATH,model_path=MODEL_PATH, device=DEVICE)
 
 if __name__=='__main__':
-   print("START: ")
+   print("Init Emotic model ... ")
