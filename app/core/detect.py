@@ -37,10 +37,11 @@ def detect(context_norm, body_norm, ind2cat, ind2vad, args):
       
     
       pred = emotic.emotic_model.frame_predict(context_norm ,body_norm, ind2cat, ind2vad, image_context)
-
+      img_bgr = cv2.cvtColor(pred, cv2.COLOR_RGB2BGR)
+      
       if camera_mode:                                         
         # Show real-time capture                                         )
-        cv2.imshow('Emotion Detector',pred)
+        cv2.imshow('Emotion Detector',img_bgr)
         if cv2.waitKey(1) & 0xFF == ord('q'):
           break
     
@@ -65,10 +66,11 @@ def detect(context_norm, body_norm, ind2cat, ind2vad, args):
       
       image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
       
-      
+      # Make forward prediction
       pred = emotic.emotic_model.frame_predict(context_norm ,body_norm, ind2cat, ind2vad, image_context)
+      img_bgr = cv2.cvtColor(pred, cv2.COLOR_RGB2BGR)
       
-      cv2.imwrite(f'{temp_path}/{idx+1:06d}.jpg', pred)
+      cv2.imwrite(f'{temp_path}/{idx+1:06d}.jpg', img_bgr)
       idx += 1
         
     # Write video prediction
@@ -87,14 +89,13 @@ def detect(context_norm, body_norm, ind2cat, ind2vad, args):
     
     # Convert image original to RGB 
     image_context = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    
+    import pdb; pdb.set_trace()
     # Make forward prediction
     pred = emotic.emotic_model.frame_predict(context_norm ,body_norm, ind2cat, ind2vad, image_context)
-    
+    img_bgr = cv2.cvtColor(pred, cv2.COLOR_RGB2BGR)
     # Write image to result path
-    cv2.imwrite(f"{result_path}/{base_name}.jpg", pred)
-    
-  
+    cv2.imwrite(f"{result_path}/{base_name}.jpg", img_bgr)
+
   
 
 def parse_args():
