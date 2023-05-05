@@ -1,23 +1,23 @@
-pandas
-scikit-learn
-boto3
-pypyr
-python-dotenv
-opencv-python
-tensorboardX
-fastapi
-uvicorn
-gunicorn
-pillow
-python-multipart
-pafy
-tqdm
-mss
-pyyaml
-Ipython
-psutil
-matplotlib
-gdown
+pandas==1.5.3
+scikit-learn==1.2.2
+boto3==1.26.104
+pypyr==5.8.0
+python-dotenv==1.0.0
+opencv-python==4.7.0.72
+tensorboardX==2.6
+fastapi==0.95.0
+uvicorn==0.21.1
+gunicorn==20.1.0
+pillow==9.4.0
+python-multipart==0.0.6
+pafy==0.5.5
+tqdm==4.65.0
+mss==9.0.1
+pyyaml==6.0
+Ipython==8.12.2
+psutil==5.9.5
+matplotlib==3.7.1
+gdown==4.7.1
 # torch==1.8.0+cu111 torchvision==0.9.0+cu111 torchaudio==0.8.0 -f https://download.pytorch.org/whl/torch_stable.html
 # export PYTHONPATH=/home/dattran/Documents/dattran/FER-app/app:$PYTHONPATH
 # uvicorn main:app --reload
