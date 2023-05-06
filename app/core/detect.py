@@ -89,7 +89,7 @@ def detect(context_norm, body_norm, ind2cat, ind2vad, args):
     
     # Convert image original to RGB 
     image_context = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    import pdb; pdb.set_trace()
+    
     # Make forward prediction
     pred = emotic.emotic_model.frame_predict(context_norm ,body_norm, ind2cat, ind2vad, image_context)
     img_bgr = cv2.cvtColor(pred, cv2.COLOR_RGB2BGR)
