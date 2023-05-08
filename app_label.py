@@ -1,13 +1,15 @@
 import os
 import tkinter as tk
+import pandas as pd
 from PIL import Image, ImageTk
 
 class ImageLabeler:
-    def __init__(self, image_folder):
+    def __init__(self, image_folder,data_csv_path):
         self.image_folder = image_folder
         self.image_list = os.listdir(image_folder)
         self.current_index = 0
         
+        self.dataframe = pd.read_csv(data_csv_path)
         self.root = tk.Tk()
         self.root.title("Image Labeler")
 
@@ -43,12 +45,22 @@ class ImageLabeler:
         self.load_image()
         
     def save_label(self):
+        
+        # After choose button save, label return a string
         label = self.label_var.get()
+    
         image_path = os.path.join(self.image_folder, self.image_list[self.current_index])
-        with open("labels.txt", "a") as f:
-            f.write(f"{image_path} {label}\n")
+        base_name = image_path.split('/')
+        
+        # Compare base_name index in csv file
+        base_name = base_name.split('.')[0]
+        
+        # Write code for save label to csv file
             
             
 if __name__ == '__main__':
     print("Start: ")
-    ImageLabeler('/Users/trantuandat/Downloads/scp-result/images')
+    folder_context = '/Users/trantuandat/Downloads/scp-result/images'
+    csv_path = 'asian.csv'
+    print("Init labeler application: ")
+    ImageLabeler(folder_context, csv_path)
