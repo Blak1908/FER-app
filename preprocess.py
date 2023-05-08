@@ -133,8 +133,8 @@ for vid_path in videos_path:
                 flag = True
                 continue
 
-            cmd_rm = f"rm {temp_path}/*.jpg"
-            os.system(cmd_rm)
+    cmd_rm = f"rm {temp_path}/*.jpg"
+    os.system(cmd_rm)
 
 df.to_csv('asian.csv', index=False)
 
