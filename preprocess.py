@@ -67,7 +67,7 @@ videos_path = sorted(glob.glob(os.path.join(video_root,'*.mp4')))
 for vid_path in videos_path:
     
     base_name = vid_path.split("/")[-1]
-
+    print("Capture video id: ", base_name)
     base_name = base_name.split('.')[0]
     
     
@@ -100,6 +100,8 @@ for vid_path in videos_path:
             frame = cv2.imread(frames_path[i])
             base_name = frames_path[i].split("/")[-1]
             base_name = base_name.split('.')[0]
+            
+            # Check image already label in CSV file => pass 
             if f'{base_name}.jpg' in file_names:
                 print("Image name is duplicated.")
                 continue
@@ -119,8 +121,10 @@ for vid_path in videos_path:
                 Continuous_Labels = ''
                 Gender = ''
                 Age = ''
-
+                
                 index = len(df.index)
+                print('New row data: \n' + folder + '\n' + file_name + '\n' + img_size + '\n' + bbox)
+                
                 df.loc[len(df.index)] = [index, folder, file_name, img_size, bbox, Categorical_Labels, Continuous_Labels, Gender, Age] 
 
                 flag = False      
