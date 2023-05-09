@@ -9,8 +9,8 @@ class ImageLabeler:
         self.image_folder = image_folder
         self.image_list = os.listdir(image_folder)
         self.current_index = 0
-        
-        self.dataframe = pd.read_csv(data_csv_path)
+        self.data_csv_path = data_csv_path
+        self.data_frame = pd.read_csv(data_csv_path)
         self.root = tk.Tk()
         self.root.title("Image Labeler")
         self.canvas = tk.Canvas(self.root, width=1080, height=600)
@@ -89,9 +89,7 @@ class ImageLabeler:
         self.load_image()
            
     def save_label(self):
-
         # Get categories
-        
         label_categories = '['
         for idx,  cat in enumerate(self.categories):
             if idx == 0:
@@ -103,23 +101,28 @@ class ImageLabeler:
         gender = self.gender_var.get()
         age = self.age_var.get()
 
-        df = pd.read_csv('asian.csv')
     
         image_path = os.path.join(self.image_folder, self.image_list[self.current_index])
         base_name = image_path.split('/')[-1]
         
         # Find the row 
-        idx = df.index[df['Filename'] == base_name][0]
+        idx = self.data_frame.index[self.data_frame['Filename'] == base_name][0]
 
         # Add the categories, gender, and age
-        df.at[idx, 'Categorical_Labels'] = label_categories
-        df.at[idx, 'Gender'] = gender
-        df.at[idx, 'Age'] = age
+        self.data_frame.at[idx, 'Categorical_Labels'] = label_categories
+        self.data_frame.at[idx, 'Gender'] = gender
+        self.data_frame.at[idx, 'Age'] = age
 
         # Save to CSV file
-        df.to_csv('asian.csv', index=False)
+        self.data_frame.to_csv(self.data_csv_path, index=False)
+        
+        # reset categories list
+        self.clean_data()
         print("Label Sucess!")  
-
+        
+    def clean_data(self):
+        self.categories = []
+        
 if __name__ == '__main__':
     print("Start: ")
     folder_context = '/home/cuongacpe/workspace/FER-app/data/context'
