@@ -75,12 +75,31 @@ class ImageLabeler:
     
     
     def load_image(self):
+        # Check row completed
+        def is_row_completed(base_name):
+            df = pd.read_csv('asian.csv')
+            row = df.loc[df['Filename'] == base_name]
+            if not row.empty and not row[['Categorical_Labels', 'Gender', 'Age']].isnull().values.any():
+                return True
+            return False
+        
         image_path = os.path.join(self.image_folder, self.image_list[self.current_index])
-        image = Image.open(image_path)
-        image = image.resize((600, 600))
-        self.photo_image = ImageTk.PhotoImage(image)
-        self.canvas.itemconfigure(self.image_label, image=self.photo_image)
-        self.canvas.grid(column=0, row=0, sticky=(tk.N, tk.S, tk.E, tk.W), columnspan=3, rowspan=2)
+        base_name = image_path.split('/')[-1]
+
+        flag = is_row_completed(base_name)
+
+        # If run all img in folder -> stop
+        if self.current_index + 1 >= len(self.image_list):
+            self.root.quit()
+            return
+        # If complete label do not show image, but button still exist just press next
+        if not flag:
+            image_path = os.path.join(self.image_folder, self.image_list[self.current_index])
+            image = Image.open(image_path)
+            image = image.resize((600, 600))
+            self.photo_image = ImageTk.PhotoImage(image)
+            self.canvas.itemconfigure(self.image_label, image=self.photo_image)
+            self.canvas.grid(column=0, row=0, sticky=(tk.N, tk.S, tk.E, tk.W), columnspan=3, rowspan=2)
         
     def next_image(self):
         self.current_index += 1
