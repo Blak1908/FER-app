@@ -2,29 +2,56 @@ import os
 import torch
 from torch.autograd import Variable as V
 import torchvision.models as models
-from torch.nn import functional as F
 import pickle
 from functools import partial
+from app.core.utils import download_model
+from app.core.settings import get_settings
 
 
-def prep_models(context_model='resnet18', body_model='resnet18', model_dir='./'):
+settings = get_settings()
+
+
+model_name = settings.CONTEXT_MODEL
+
+model_dir = settings.MODEL_PATH
+model_resnet18 = settings.RESNET18_MODEL
+model_resnet18_py26 = settings.RESNET18_MODEL_PY26
+
+
+id_resnet18 = settings.ID_RESNET18
+id_resnet18_py26 = settings.ID_RESNET18_PY26
+
+
+
+def prep_models(context_model='resnet18', body_model='resnet18'):
   ''' Download imagenet pretrained models for context_model and body_model.
   :param context_model: Model to use for conetxt features.
   :param body_model: Model to use for body features.
   :param model_dir: Directory path where to store pretrained models.
   :return: Yolo model after loading model weights
   '''
-  model_name = '%s_places365.pth.tar' % context_model
-  model_file = os.path.join(model_dir, model_name)
-  if not os.path.exists(model_file):
-    download_command = 'wget ' + 'http://places2.csail.mit.edu/models_places365/' + model_name +' -O ' + model_file
-    os.system(download_command)
+  
+  # Check folder exist
+  if not os.path.exists(model_dir):
+    os.system(f"mkdir {model_dir}")
 
-  save_file = os.path.join(model_dir,'%s_places365_py36.pth.tar' % context_model)
+  # Check checkpoint resnet18
+  if not os.path.isfile(model_resnet18):
+    print("Downloading resnet checkpoint path on Drive...")
+    
+    status = download_model(id_resnet18, model_resnet18)
+    if not status:
+        print("Cannot download resnet checkpoint path on Drive")
+        # download_command = 'wget ' + 'http://places2.csail.mit.edu/models_places365/' + model_name +' -O ' + model_file
+        # os.system(download_command)
+        
+  print("===== Starting create the network architecture =====")
+  
+  save_file = model_resnet18_py26
   
   pickle.load = partial(pickle.load, encoding="latin1")
   pickle.Unpickler = partial(pickle.Unpickler, encoding="latin1")
-  model = torch.load(model_file, map_location=lambda storage, loc: storage, pickle_module=pickle)
+  model = torch.load(model_resnet18, map_location=lambda storage, loc: storage, pickle_module=pickle)
   torch.save(model, save_file)
 
   # create the network architecture
@@ -55,7 +82,11 @@ def prep_models(context_model='resnet18', body_model='resnet18', model_dir='./')
   return model_context, model_body
 
 
-if __name__ == '__main__':
-  prep_models(model_dir='proj/debug_exp/models')
 
-
+if __name__ == "__main__":
+  print("Test prepare model: ")
+  try:
+    context_model, body_model = prep_models(model_name, model_name)
+    print("Load model success! ")
+  except Exception as e:
+    print("Error: ", e)
