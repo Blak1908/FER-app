@@ -120,7 +120,6 @@ class ImageLabeler:
         gender = self.gender_var.get()
         age = self.age_var.get()
 
-    
         image_path = os.path.join(self.image_folder, self.image_list[self.current_index])
         base_name = image_path.split('/')[-1]
         
