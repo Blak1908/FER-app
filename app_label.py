@@ -97,19 +97,21 @@ class ImageLabeler:
             return
         # If complete label do not show image, but button still exist just press next
         if flag:
-            image_path = os.path.join(self.image_folder, self.image_list[self.current_index])
-            image = Image.open(image_path)
-            image = image.resize((600, 600))
-            self.photo_image = ImageTk.PhotoImage(image)
-            self.canvas.itemconfigure(self.image_label, image=self.photo_image)
-            self.canvas.grid(column=1, row=0, sticky=(tk.N, tk.S, tk.E, tk.W))
+            self.next_image()
 
-            image_body_path = os.path.join(self.image_body_folder, self.image_body_list[self.current_index])
-            image_body = Image.open(image_body_path)
-            image_body = image_body.resize((100, 600))
-            self.photo_body_image = ImageTk.PhotoImage(image_body)
-            self.canvas.itemconfigure(self.image_body_label, image=self.photo_body_image)
-            self.canvas.grid(column=0, row=0, sticky=(tk.N, tk.S, tk.E, tk.W))
+        image_path = os.path.join(self.image_folder, self.image_list[self.current_index])
+        image = Image.open(image_path)
+        image = image.resize((600, 600))
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.canvas.itemconfigure(self.image_label, image=self.photo_image)
+        self.canvas.grid(column=1, row=0, sticky=(tk.N, tk.S, tk.E, tk.W))
+
+        image_body_path = os.path.join(self.image_body_folder, self.image_body_list[self.current_index])
+        image_body = Image.open(image_body_path)
+        image_body = image_body.resize((100, 600))
+        self.photo_body_image = ImageTk.PhotoImage(image_body)
+        self.canvas.itemconfigure(self.image_body_label, image=self.photo_body_image)
+        self.canvas.grid(column=0, row=0, sticky=(tk.N, tk.S, tk.E, tk.W))
         
         
     def next_image(self):
