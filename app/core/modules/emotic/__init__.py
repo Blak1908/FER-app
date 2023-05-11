@@ -6,7 +6,7 @@ import os
 from app.core.modules.emotic.utils.inference import infer
 from app.core.emotic import Emotic
 from app.core.settings import get_settings
-from app.core.utils import download_model
+from app.core.utils import download_folder_model
 
 
 settings = get_settings()
@@ -23,14 +23,14 @@ ID_MODEL = settings.ID_MODEL
 if not os.path.exists(MAT_PATH):
     os.system(f"mkdir {MAT_PATH}")
     print("Downloading mat file on Drive...")
-    status = download_model(ID_MAT,MAT_PATH)
+    status = download_folder_model(ID_MAT,MAT_PATH)
     if not status:
         print("Cannot download mat file on Drive")
 
 if not os.path.exists(MODEL_PATH):
     os.system(f"mkdir {MODEL_PATH}")
     print("Downloading model on Drive...")
-    status = download_model(ID_MODEL,MODEL_PATH)
+    status = download_folder_model(ID_MODEL,MODEL_PATH)
     if not status:
         print("Cannot download model file on Drive")
 
