@@ -4,10 +4,12 @@ import pandas as pd
 from PIL import Image, ImageTk
 
 class ImageLabeler:
-    def __init__(self, image_folder,data_csv_path):
+    def __init__(self, image_folder, image_body_folder, data_csv_path):
         self.categories = []
         self.image_folder = image_folder
+        self.image_body_folder = image_body_folder
         self.image_list = os.listdir(image_folder)
+        self.image_body_list = os.listdir(image_body_folder)
         self.current_index = 0
         self.data_csv_path = data_csv_path
         self.data_frame = pd.read_csv(data_csv_path)
@@ -16,6 +18,7 @@ class ImageLabeler:
         self.canvas = tk.Canvas(self.root, width=1080, height=600)
         
         self.image_label = self.canvas.create_image(0, 0, anchor="nw")
+        self.image_body_label = self.canvas.create_image(800,0, anchor = "nw")
         self.load_image()
 
         # Add category buttons
@@ -30,41 +33,41 @@ class ImageLabeler:
         
         # selected_item function
         self.btn_add_cats = tk.Button(self.root, text='Add Selected', command=self.selected_item)
-        self.btn_add_cats.grid(column=2, row=0, sticky=tk.NW, padx=5, pady=180)
+        self.btn_add_cats.grid(column=3, row=0, sticky=tk.NW, padx=5, pady=180)
         
         # Placing the button and listbox
         # self.btn_add_cats.pack(side='bottom')
-        self.cat_box.grid(column=2, row=0, sticky=tk.NW, padx=5)
+        self.cat_box.grid(column=3, row=0, sticky=tk.NW, padx=5)
         # self.cat_box.pack()
 
         # Add gender radio buttons
         self.gender_var = tk.StringVar(value="male")
         self.gender_label = tk.Label(self.root, text="Gender:")
-        self.gender_label.grid(column=2,row=0, sticky=tk.NW, padx=5, pady=220)
+        self.gender_label.grid(column=3,row=0, sticky=tk.NW, padx=5, pady=220)
         self.male_radio = tk.Radiobutton(self.root, text="Male", variable=self.gender_var, value="Male")
-        self.male_radio.grid(column=2,row=0, sticky=tk.NW, padx=5, pady=245)
+        self.male_radio.grid(column=3,row=0, sticky=tk.NW, padx=5, pady=245)
         self.male_radio = tk.Radiobutton(self.root, text="Female", variable=self.gender_var, value="Female")
-        self.male_radio.grid(column=2,row=0, sticky=tk.NW, padx=5, pady=270)
+        self.male_radio.grid(column=3,row=0, sticky=tk.NW, padx=5, pady=270)
 
         # Add radio buttons for age
         self.age_var = tk.StringVar(value="kid")
         self.age_label = tk.Label(self.root, text="Age:")
-        self.age_label.grid(column=2,row=0, sticky=tk.NW, padx=5, pady=310)
+        self.age_label.grid(column=3,row=0, sticky=tk.NW, padx=5, pady=310)
 
         self.age_kid = tk.Radiobutton(self.root, text="Kid", variable=self.age_var, value="Kid")
-        self.age_kid.grid(column=2,row=0, sticky=tk.NW, padx=5, pady=335)
+        self.age_kid.grid(column=3,row=0, sticky=tk.NW, padx=5, pady=335)
 
         self.age_teen = tk.Radiobutton(self.root, text="Teenager", variable=self.age_var, value="Teenager")
-        self.age_teen.grid(column=2,row=0, sticky=tk.NW, padx=5, pady=360)
+        self.age_teen.grid(column=3,row=0, sticky=tk.NW, padx=5, pady=360)
 
         self.age_adult = tk.Radiobutton(self.root, text="Adult", variable=self.age_var, value="Adult")
-        self.age_adult.grid(column=2,row=0, sticky=tk.NW, padx=5, pady=385)
+        self.age_adult.grid(column=3,row=0, sticky=tk.NW, padx=5, pady=385)
                
         self.next_button = tk.Button(self.root, text="Next", command=self.next_image)
-        self.next_button.grid(column=2,row=0, sticky=tk.NW, padx=5, pady=410)
+        self.next_button.grid(column=3,row=0, sticky=tk.NW, padx=5, pady=410)
         
         self.save_button = tk.Button(self.root, text="Save", command=self.save_label)
-        self.save_button.grid(column=2,row=0, sticky=tk.NW, padx=5, pady=435)
+        self.save_button.grid(column=3,row=0, sticky=tk.NW, padx=5, pady=435)
         
         self.root.mainloop()
 
@@ -99,7 +102,15 @@ class ImageLabeler:
             image = image.resize((600, 600))
             self.photo_image = ImageTk.PhotoImage(image)
             self.canvas.itemconfigure(self.image_label, image=self.photo_image)
-            self.canvas.grid(column=0, row=0, sticky=(tk.N, tk.S, tk.E, tk.W), columnspan=3, rowspan=2)
+            self.canvas.grid(column=1, row=0, sticky=(tk.N, tk.S, tk.E, tk.W))
+
+            image_body_path = os.path.join(self.image_body_folder, self.image_body_list[self.current_index])
+            image_body = Image.open(image_body_path)
+            image_body = image_body.resize((100, 600))
+            self.photo_body_image = ImageTk.PhotoImage(image_body)
+            self.canvas.itemconfigure(self.image_body_label, image=self.photo_body_image)
+            self.canvas.grid(column=0, row=0, sticky=(tk.N, tk.S, tk.E, tk.W))
+        
         
     def next_image(self):
         self.current_index += 1
@@ -120,7 +131,6 @@ class ImageLabeler:
         gender = self.gender_var.get()
         age = self.age_var.get()
 
-    
         image_path = os.path.join(self.image_folder, self.image_list[self.current_index])
         base_name = image_path.split('/')[-1]
         
@@ -145,6 +155,7 @@ class ImageLabeler:
 if __name__ == '__main__':
     print("Start: ")
     folder_context = '/home/cuongacpe/workspace/FER-app/data/context'
+    folder_body = '/home/cuongacpe/workspace/FER-app/data/body'
     csv_path = 'asian.csv'
     print("Init labeler application: ")
-    ImageLabeler(folder_context, csv_path)
+    ImageLabeler(folder_context, folder_body, csv_path)
