@@ -1,6 +1,6 @@
 # AI-Chatbot-Synthesis
 
-AI-Chatbot-Synthesis is a project I developed with a focus on creating an advanced conversational AI chatbot. Leveraging the power of artificial intelligence and natural language processing, this chatbot provides intelligent responses and engages users in meaningful conversations.
+AI-Chatbot-Synthesis is a project We developed with a focus on creating an advanced conversational AI chatbot. Leveraging the power of artificial intelligence and natural language processing, this chatbot provides intelligent responses and engages users in meaningful conversations.
 
 ## Project Overview
 
