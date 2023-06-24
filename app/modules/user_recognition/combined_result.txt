@@ -1,0 +1,6 @@
+Combined Result:
+Emotion: sad
+Average Age: 26.0
+Gender: Man
+Race: asian
+
