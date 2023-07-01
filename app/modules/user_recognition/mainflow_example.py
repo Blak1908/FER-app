@@ -2,13 +2,15 @@ from deepface import DeepFace
 import cv2
 import os
 import base64
+import json
 from time import time
 
 num_frames = 5  # Number of frames to capture
 output_folder = "frames"  # Folder to save the frames
 
-cap = cv2.VideoCapture(0)  # Use 0 for webcam, or specify the video file path
+cap = cv2.VideoCapture(0) 
 frames = []
+
 
 while len(frames) < num_frames:
     # Read a frame from the video source
@@ -67,20 +69,39 @@ age = combined_result['age'] / len(results)
 gender = max(combined_result['gender'], key=combined_result['gender'].get)
 race = max(combined_result['race'], key=combined_result['race'].get)
 
-print("Combined Result:")
-print("Emotion:", emotion)
-print("Age:", int(age))
-print("Gender:", gender)
-print("Race:", race)
 
-# Save the combined result to a text file
-output_file = "combined_result.txt"
-with open(output_file, 'w') as file:
-    file.write("Combined Result:\n")
-    file.write("Emotion: " + emotion + "\n")
-    file.write("Average Age: " + str(age) + "\n")
-    file.write("Gender: " + gender + "\n")
-    file.write("Race: " + race + "\n")
-    file.write("\n")
+flag = True
 
-print("Combined result saved to", output_file)
+if flag:
+    
+    default_details = {
+        "emotion": emotion
+    }
+
+    # Save the emotion details to a JSON file
+    with open("default_details.json", 'w') as file:
+        json.dump(default_details, file, indent=4)
+
+    print("Emotion details saved to emotion_details.json")
+else:
+    request = input("Enter the parameter(s) you want to choose (age, gender, race), separated by spaces: ").split()
+    request_details = {}
+
+    # Include the chosen parameters and their details in the request details
+    for param in request:
+        if param == 'age':
+            request_details['age'] = int(age)
+        elif param == 'gender':
+            request_details['gender'] = gender
+        elif param == 'race':
+            request_details['race'] = race
+
+    # Include emotion details in the request details
+    request_details['emotion'] = emotion
+
+    if len(request_details) > 0:
+        with open("request_details.json", 'w') as file:
+            json.dump(request_details, file, indent=4)
+        print("Request details saved to request_details.json")
+    else:
+        print("No requested parameters found in the result.")
