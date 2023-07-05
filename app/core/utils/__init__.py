@@ -25,3 +25,7 @@ def download_model(id, output_file):
     status = gdown.download(url, output_file, quiet=False)
     
     return status
+
+
+def get_activation_phrase():
+    return
