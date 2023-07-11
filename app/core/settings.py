@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     ID_RESNET18_PY26 = config("id_resnet18_py36", default="")
     ID_WHISPER_CHECKPOINT = config("id_whisper_checkpoint", default="")                    
     TEMP_PATH = config("temp_path", default="")
+    SCR_FOLDER_NAME = config("scr_folder_name", default="")
     
     
 def get_settings():
