@@ -21,16 +21,19 @@ if not os.path.exists(src_folder_path):
 
 class Item(BaseModel):
     images: List[str]
+    isRequire_analys: bool
 
 @app.post("/api/v1/object-analysis/")
 async def create_item(item: Item):
-    import pdb; pdb.set_trace()
     status = 200
+    print(item.isRequire_analys)
+    images = []
     try:
         for i, image_data in enumerate(item.images):
             decoded_image = base64.b64decode(image_data)
             image = Image.open(io.BytesIO(decoded_image))
             image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+            images.append(image)
             cv2.imwrite(f"{src_folder_path}/{i}.jpg", image)
     except Exception as e:
         print(e)
