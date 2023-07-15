@@ -54,3 +54,16 @@ async def message_consumer(message: default_analys_result):
     print("name: ", message.name)
     print("emotion: ", message.emotion)
     return message
+
+class audioAnalys(BaseModel):
+    audio: str
+
+@app.post("/api/v1/speech2text")
+async def speech2text(audioAnalys: audioAnalys):
+    status = 200
+    audio_bytes = base64.b64decode(audioAnalys.audio)
+    # Convert bytes back to NumPy array
+    audio_array = np.frombuffer(audio_bytes, dtype=np.float32)
+    print("audio: ", audio_array)
+    return status
+    
