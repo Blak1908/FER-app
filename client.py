@@ -17,7 +17,8 @@ for path in image_paths:
 url = "http://127.0.0.1:8000/api/v1/object-analysis/"
 
 payload = json.dumps({
-  "images": binary_images
+  "images": binary_images,
+  "isRequire_analys": "true"
 })
 headers = {
   'accept': 'application/json',

@@ -1,6 +1,7 @@
 from app.core.settings import get_settings
 import gdown
 import os
+import string
 
 settings = get_settings()
 
@@ -29,3 +30,12 @@ def download_model(id, output_file):
 
 def get_activation_phrase():
     return
+
+def remove_special_characters(input_string):
+    # Khởi tạo một chuỗi chứa các ký tự đặc biệt
+    special_characters = string.punctuation
+    
+    # Tạo một chuỗi mới chỉ chứa các ký tự không phải là ký tự đặc biệt
+    result_string = ''.join(char for char in input_string if char not in special_characters)
+    
+    return result_string
