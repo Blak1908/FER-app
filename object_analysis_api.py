@@ -39,4 +39,4 @@ async def create_item(item: Item):
         print(e)
         status = 400
         
-    return status
+    return {"status": status}
