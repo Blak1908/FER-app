@@ -17,6 +17,7 @@ if os.path.isfile(s2t_model_path):
 
 class SPEECH2TEXT_TRANSFORMER():
     def __init__(self,device, t2s_model_path):
+        print("Init SPEECH2TEXT_TRANSFORMER")
         self.device = device
         self.model = model = load_model("base").to(device)
 
