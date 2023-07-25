@@ -23,7 +23,8 @@ class SPEECH2TEXT_TRANSFORMER():
 
     def forward(self, audio):
         audio = load_audio_whisper(audio)
-        result = self.model.transcribe(audio, language="vi")
+        # import pdb; pdb.set_trace()
+        result = self.model.transcribe(audio, language="vi" ,fp16=False)
         return result
     
         
