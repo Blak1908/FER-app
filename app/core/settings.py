@@ -23,8 +23,16 @@ class Settings(BaseSettings):
     ID_WHISPER_CHECKPOINT = config("id_whisper_checkpoint", default="")                    
     TEMP_PATH = config("temp_path", default="")
     SCR_FOLDER_NAME = config("scr_folder_name", default="")
-    
-    
+
+    DETECTOR_BACKEND_CHECKPOINT_PATH = config("detector_backend_checkpoint_path", default="")
+    DETECTOR_BACKEND_NAME = config("detector_backend_name", default="")
+    DEEPFACE_MODEL_CHECKPOINT_NAME= config("detector_backend_checkpoint_name", default="")
+    DEEPFACE_MODEL_NAME = config("deepface_model_name", default="")
+    EMOTION_CHECKPOINT_PATH = config("emotion_checkpoint_path", default="")
+    AGE_CHECKPOINT_PATH = config("age_checkpoint_path", default="")
+    GENDER_CHECKPOINT_PATH = config("gender_checkpoint_path", default="")
+    RACE_CHECKPOINT_PATH = config("race_checkpoint_path", default="")
+
 def get_settings():
     settings = Settings()
     return settings
