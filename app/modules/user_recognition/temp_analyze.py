@@ -1,11 +1,7 @@
 from deepface import DeepFace
-import cv2
 import os
-import base64
+from collections import Counter
 import json
-import shutil
-from time import time
-from sub_function import calculate_mean, most_common_element
 
 models = [
   "VGG-Face", 
@@ -35,40 +31,42 @@ distances = [
     'euclidean_l2'
 ]
 
+
+def calculate_mean(lst):
+    if not lst:
+        return None
+    total_sum = sum(lst)
+    mean = total_sum / len(lst)
+    return mean
+
+def most_common_element(lst):
+    # Create a Counter object to count the occurrences of each element
+    counter = Counter(lst)
+
+    # Use the most_common() method to get a list of tuples with elements and their counts
+    most_common_items = counter.most_common()
+
+    # The most common item will be the first element in the most_common_items list
+    most_common_element, count = most_common_items[0]
+
+    return most_common_element
+
+
 num_frames = 5  # Number of frames to capture
 output_folder = "frames"  # Folder to save the frames
 
-cap = cv2.VideoCapture(0) 
 frames = []
 
 
 while len(frames) < num_frames:
-    # Read a frame from the video source
-    ret, frame = cap.read()
+
 
     # Generate a unique filename for the frame
     filename = f"frame{len(frames)+1}.jpg"
     filepath = os.path.join(output_folder, filename)
 
-    # Save the frame as an image
-    cv2.imwrite(filepath, frame)
-
     # Append the file path to the list of frames
     frames.append(filepath)
-
-    # Display the frame
-    cv2.imshow("Capture Frames", frame)
-
-    # Break the loop if 'q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-cap.release()
-cv2.destroyAllWindows()
-
-results = []
-
-start = time()
 
 # identities person
 db_path = "/home/cuongacpe/Documents/AI-Chatbot-Synthesis/app/modules/user_recognition/user/database"

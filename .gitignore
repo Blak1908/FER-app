@@ -22,3 +22,8 @@ app/__pycache__/*
 __pycache__/*
 app/core/temp/*
 results/*
+app/weights/
+# Ignore all .jpg, .png, .jpeg files in the root directory and its subdirectories
+*.jpg
+*.png
+*.jpeg

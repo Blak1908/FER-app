@@ -7,6 +7,7 @@ import base64
 import numpy as np
 from PIL import Image
 from typing import List
+from app.modules.user_recognition.user_analyst_processing import deepface_processing
 
 settings = get_settings()
 
@@ -35,8 +36,13 @@ async def create_item(item: Item):
             image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
             images.append(image)
             cv2.imwrite(f"{src_folder_path}/{i}.jpg", image)
+            
     except Exception as e:
         print(e)
         status = 400
         
     return {"status": status}
+
+result = deepface_processing(db_path="/home/cuongacpe/Documents/AI-Chatbot-Synthesis/app/modules/user_recognition/user/database",
+                                 models="Facenet", distances='euclidean_l2',flag=True)
+print(result)
