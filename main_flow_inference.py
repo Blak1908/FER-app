@@ -63,7 +63,7 @@ async def consume_messages():
                     if ret:  # Check if the frame is successfully captured
                         # Encode the frame to base64
                         _, buffer = cv2.imencode('.jpg', frame)
-                        encoded_image = base64.b64encode(frame).decode("utf-8")
+                        encoded_image = base64.b64encode(buffer).decode("utf-8")
                         binary_images.append(encoded_image)
                         
                     else:
