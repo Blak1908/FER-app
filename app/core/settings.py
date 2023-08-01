@@ -29,13 +29,13 @@ class Settings(BaseSettings):
     DEEPFACE_MODEL_NAME = config("deepface_model_name", default="")
     DEEPFACE_MODEL_CHECKPOINT_NAME = config("deepface_model_checkpoint_name", default="")
     EMOTION_CHECKPOINT_NAME = config("emotion_checkpoint_name", default="")
-    EMOTION = config("emotion", default="")
+    EMOTION_MODEL_NAME = config("emotion_model_name", default="")
     AGE_CHECKPOINT_NAME = config("age_checkpoint_name", default="")
-    AGE = config("age", default="")
+    AGE_MODEL_NAME = config("age_model_name", default="")
     GENDER_CHECKPOINT_NAME = config("gender_checkpoint_name", default="")
-    GENDER = config("gender", default="")
+    GENDER_MODEL_NAME = config("gender_model_name", default="")
     RACE_CHECKPOINT_NAME = config("race_checkpoint_name", default="")
-    RACE = config("race", default="")
+    RACE_MODEL_NAME = config("race_model_name", default="")
 
 def get_settings():
     settings = Settings()

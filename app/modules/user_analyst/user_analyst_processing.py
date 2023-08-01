@@ -1,10 +1,10 @@
-from app.modules.user_recognition.deepface.deepface import DeepFace
-from app.modules.user_recognition.deepface.deepface.detectors import FaceDetector, DlibWrapper
+from app.modules.user_analyst.deepface.deepface import DeepFace
+from app.modules.user_analyst.deepface.deepface.detectors import FaceDetector, DlibWrapper
 import os
 import glob
-from app.modules.user_recognition.sub_function import calculate_mean, most_common_element
+from app.modules.user_analyst.sub_function import calculate_mean, most_common_element
 from app.core.settings import get_settings
-from app.modules.user_recognition.deepface.deepface.DeepFace import build_model
+from app.modules.user_analyst.deepface.deepface.DeepFace import build_model
 
 settings = get_settings()
 
@@ -16,13 +16,13 @@ detector_backend_name = settings.DETECTOR_BACKEND_NAME
 deepface_model_checkpoint_name = settings.DEEPFACE_MODEL_CHECKPOINT_NAME
 deepface_model_name = settings.DEEPFACE_MODEL_NAME
 emotion_checkpoint_name = settings.EMOTION_CHECKPOINT_NAME
-emotion = settings.EMOTION
+emotion_model_name = settings.EMOTION_MODEL_NAME
 age_checkpoint_name = settings.AGE_CHECKPOINT_NAME
-age = settings.AGE
+age_model_name = settings.AGE_MODEL_NAME
 gender_checkpoint_name = settings.GENDER_CHECKPOINT_NAME
-gender = settings.GENDER
+gender_model_name = settings.GENDER_MODEL_NAME
 race_checkpoint_name = settings.RACE_CHECKPOINT_NAME
-race = settings.RACE
+race_model_name = settings.RACE_MODEL_NAME
 
 if not os.path.exists(weights_path):
     os.makedirs(weights_path)
@@ -40,10 +40,10 @@ class DeepFaceProcessingModel:
         self.face_detector =  DlibWrapper.build_model(detector_backend_checkpoint_path)
         self.face_respresent = build_model(deepface_model_name,deepface_model_checkpoint_path)
         self.user_analysis_model = {}
-        self.user_analysis_model["emotion"] = build_model(emotion, emotion_checkpoint_path)
-        self.user_analysis_model["age"] = build_model(age,age_checkpoint_path)
-        self.user_analysis_model["gender"] = build_model(gender, gender_checkpoint_path)
-        self.user_analysis_model["race"] = build_model(race, race_checkpoint_path)
+        self.user_analysis_model["emotion"] = build_model(emotion_model_name, emotion_checkpoint_path)
+        self.user_analysis_model["age"] = build_model(age_model_name,age_checkpoint_path)
+        self.user_analysis_model["gender"] = build_model(gender_model_name, gender_checkpoint_path)
+        self.user_analysis_model["race"] = build_model(race_model_name, race_checkpoint_path)
         self.max = 0
 
     def get_images_list_path(self):

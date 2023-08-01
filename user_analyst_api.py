@@ -7,7 +7,7 @@ import base64
 import numpy as np
 from PIL import Image
 from typing import List
-from app.modules.user_recognition.user_analyst_processing import deepface_processing
+from app.modules.user_analyst.user_analyst_processing import deepface_processing
 
 settings = get_settings()
 
