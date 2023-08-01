@@ -1,6 +1,6 @@
 import os
 import cv2
-from app.modules.user_recognition.deepface.deepface.detectors import FaceDetector
+from app.modules.user_analyst.deepface.deepface.detectors import FaceDetector
 
 
 def build_model():

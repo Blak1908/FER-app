@@ -16,7 +16,7 @@ import tensorflow as tf
 from deprecated import deprecated
 
 # package dependencies
-from app.modules.user_recognition.deepface.deepface.basemodels import (
+from app.modules.user_analyst.deepface.deepface.basemodels import (
     VGGFace,
     OpenFace,
     Facenet,
@@ -27,8 +27,8 @@ from app.modules.user_recognition.deepface.deepface.basemodels import (
     ArcFace,
     SFace,
 )
-from app.modules.user_recognition.deepface.deepface.extendedmodels import Age, Gender, Race, Emotion
-from app.modules.user_recognition.deepface.deepface.commons import functions, realtime, distance as dst
+from app.modules.user_analyst.deepface.deepface.extendedmodels import Age, Gender, Race, Emotion
+from app.modules.user_analyst.deepface.deepface.commons import functions, realtime, distance as dst
 
 # -----------------------------------
 # configurations for dependencies
@@ -401,6 +401,7 @@ def find(
     align=True,
     normalization="base",
     silent=False,
+    name=None
 ):
 
     """
@@ -450,6 +451,10 @@ def find(
     file_name = f"representations_{model_name}.pkl"
     file_name = file_name.replace("-", "_").lower()
 
+    if name != None:
+        os.remove(db_path + "/" + file_name)
+        
+
     if path.exists(db_path + "/" + file_name):
 
         if not silent:
@@ -458,12 +463,14 @@ def find(
                 + f" in {file_name}. If you added new instances after the creation, then please "
                 + "delete this file and call find function again. It will create it again."
             )
+        
 
         with open(f"{db_path}/{file_name}", "rb") as f:
             representations = pickle.load(f)
 
         if not silent:
             print("There are ", len(representations), " representations found in ", file_name)
+
 
     else:  # create representation.pkl from scratch
         employees = []

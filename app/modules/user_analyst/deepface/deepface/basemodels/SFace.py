@@ -3,7 +3,7 @@ import numpy as np
 import cv2 as cv
 import gdown
 
-from app.modules.user_recognition.deepface.deepface.commons import functions
+from app.modules.user_analyst.deepface.deepface.commons import functions
 
 # pylint: disable=line-too-long, too-few-public-methods
 

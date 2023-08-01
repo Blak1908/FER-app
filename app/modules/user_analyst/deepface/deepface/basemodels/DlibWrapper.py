@@ -1,4 +1,4 @@
-from app.modules.user_recognition.deepface.deepface.basemodels.DlibResNet import DlibResNet
+from app.modules.user_analyst.deepface.deepface.basemodels.DlibResNet import DlibResNet
 
 
 def loadModel(checkpoint_path):

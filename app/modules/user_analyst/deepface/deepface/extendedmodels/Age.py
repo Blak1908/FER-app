@@ -2,8 +2,8 @@ import os
 import gdown
 import numpy as np
 import tensorflow as tf
-from app.modules.user_recognition.deepface.deepface.basemodels import VGGFace
-from app.modules.user_recognition.deepface.deepface.commons import functions
+from app.modules.user_analyst.deepface.deepface.basemodels import VGGFace
+from app.modules.user_analyst.deepface.deepface.commons import functions
 
 # ----------------------------------------
 # dependency configurations

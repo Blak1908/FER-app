@@ -1,8 +1,8 @@
 import os
 import gdown
 import tensorflow as tf
-from app.modules.user_recognition.deepface.deepface.basemodels import VGGFace
-from app.modules.user_recognition.deepface.deepface.commons import functions
+from app.modules.user_analyst.deepface.deepface.basemodels import VGGFace
+from app.modules.user_analyst.deepface.deepface.commons import functions
 
 # -------------------------------------
 # pylint: disable=line-too-long

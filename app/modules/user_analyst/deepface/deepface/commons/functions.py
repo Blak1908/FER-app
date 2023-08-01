@@ -11,7 +11,7 @@ import tensorflow as tf
 from deprecated import deprecated
 
 # package dependencies
-from app.modules.user_recognition.deepface.deepface.detectors import FaceDetector
+from app.modules.user_analyst.deepface.deepface.detectors import FaceDetector
 
 
 # --------------------------------------------------

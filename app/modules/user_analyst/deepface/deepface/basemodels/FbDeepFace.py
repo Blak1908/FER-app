@@ -2,7 +2,7 @@ import os
 import zipfile
 import gdown
 import tensorflow as tf
-from app.modules.user_recognition.deepface.deepface.commons import functions
+from app.modules.user_analyst.deepface.deepface.commons import functions
 
 # --------------------------------
 # dependency configuration

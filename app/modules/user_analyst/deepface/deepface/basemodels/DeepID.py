@@ -1,7 +1,7 @@
 import os
 import gdown
 import tensorflow as tf
-from app.modules.user_recognition.deepface.deepface.commons import functions
+from app.modules.user_analyst.deepface.deepface.commons import functions
 
 tf_version = int(tf.__version__.split(".", maxsplit=1)[0])
 

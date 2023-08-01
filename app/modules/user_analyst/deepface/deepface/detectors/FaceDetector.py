@@ -1,8 +1,8 @@
 import math
 from PIL import Image
 import numpy as np
-from app.modules.user_recognition.deepface.deepface.commons import distance
-from app.modules.user_recognition.deepface.deepface.detectors import (
+from app.modules.user_analyst.deepface.deepface.commons import distance
+from app.modules.user_analyst.deepface.deepface.detectors import (
     OpenCvWrapper,
     SsdWrapper,
     DlibWrapper,

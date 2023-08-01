@@ -1,4 +1,4 @@
-from app.modules.user_recognition.deepface.deepface.detectors import FaceDetector
+from app.modules.user_analyst.deepface.deepface.detectors import FaceDetector
 
 # Link - https://google.github.io/mediapipe/solutions/face_detection
 

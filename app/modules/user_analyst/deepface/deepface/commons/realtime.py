@@ -3,8 +3,8 @@ import time
 import numpy as np
 import pandas as pd
 import cv2
-from app.modules.user_recognition.deepface.deepface import DeepFace
-from app.modules.user_recognition.deepface.deepface.commons import functions
+from app.modules.user_analyst.deepface.deepface import DeepFace
+from app.modules.user_analyst.deepface.deepface.commons import functions
 
 # dependency configuration
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"

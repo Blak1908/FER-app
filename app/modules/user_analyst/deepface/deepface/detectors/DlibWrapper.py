@@ -1,7 +1,7 @@
 import os
 import bz2
 import gdown
-from app.modules.user_recognition.deepface.deepface.commons import functions
+from app.modules.user_analyst.deepface.deepface.commons import functions
 
 
 def build_model(detector_backend_checkpoint_path):
