@@ -4,16 +4,20 @@ from whisper import load_model
 from whisper.audio import load_audio as load_audio_whisper
 
 from app.core.settings import get_settings
-
+from app.core.utils import download_model
 settings = get_settings()
 
 s2t_model_path = settings.WHISPER_PATH
 id_s2t = settings.ID_WHISPER_CHECKPOINT
 device = settings.DEVICE
+weights_path = settings.CHECKPOINT_PATH
 
+if not os.path.exists(weights_path):
+    os.makedirs(weights_path)
 # Download checkpoint whisper
 if os.path.isfile(s2t_model_path):
-    print()
+    print("Download whisper model.")
+    download_model(id_s2t, weights_path)
 
 class SPEECH2TEXT_TRANSFORMER():
     def __init__(self,device, t2s_model_path):
@@ -33,4 +37,5 @@ s2t_transformer =  SPEECH2TEXT_TRANSFORMER(device=device, t2s_model_path=s2t_mod
 def s2t_processing(audio):
     result = s2t_transformer.forward(audio)
     return result
-         
+
+# uvicorn s2t_api:app --host 172.17.12.221 --port 8000
