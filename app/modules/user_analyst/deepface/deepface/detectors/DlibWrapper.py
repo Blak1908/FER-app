@@ -11,21 +11,21 @@ def build_model(detector_backend_checkpoint_path):
     import dlib  # this requirement is not a must that's why imported here
 
     # check required file exists in the home/.deepface/weights folder
-    if os.path.isfile(detector_backend_checkpoint_path) != True:
+    # if os.path.isfile(detector_backend_checkpoint_path) != True:
 
-        file_name = "shape_predictor_5_face_landmarks.dat.bz2"
-        print(f"{file_name} is going to be downloaded")
+    #     file_name = "shape_predictor_5_face_landmarks.dat.bz2"
+    #     print(f"{file_name} is going to be downloaded")
 
-        url = f"http://dlib.net/files/{file_name}"
-        output = f"{home}/.deepface/weights/{file_name}"
+    #     url = f"http://dlib.net/files/{file_name}"
+    #     output = f"{home}/.deepface/weights/{file_name}"
 
-        gdown.download(url, output, quiet=False)
+    #     gdown.download(url, output, quiet=False)
 
-        zipfile = bz2.BZ2File(output)
-        data = zipfile.read()
-        newfilepath = output[:-4]  # discard .bz2 extension
-        with open(newfilepath, "wb") as f:
-            f.write(data)
+    #     zipfile = bz2.BZ2File(output)
+    #     data = zipfile.read()
+    #     newfilepath = output[:-4]  # discard .bz2 extension
+    #     with open(newfilepath, "wb") as f:
+    #         f.write(data)
 
     face_detector = dlib.get_frontal_face_detector()
     sp = dlib.shape_predictor(detector_backend_checkpoint_path)
