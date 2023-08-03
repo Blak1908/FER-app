@@ -78,3 +78,5 @@ def create_user(information: Information):
         status = 400
         
     return {"result": result, "status": status}
+
+# uvicorn user_analyst_api:app --host 172.17.12.221 --port 8000

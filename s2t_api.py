@@ -15,7 +15,7 @@ path_temp = settings.TEMP_PATH
 src_folder_name = settings.SCR_FOLDER_NAME
 src_folder_path = f'{path_temp}/{src_folder_name}'
 
-fs = 48000
+fs = 16000
 
 if not os.path.exists(src_folder_path):
     os.makedirs(src_folder_path)
