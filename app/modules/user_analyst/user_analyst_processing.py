@@ -5,16 +5,24 @@ import glob
 from app.modules.user_analyst.ultils import calculate_mean, most_common_element
 from app.core.settings import get_settings
 from app.modules.user_analyst.deepface.deepface.DeepFace import build_model
+from app.core.utils import download_model
 
 settings = get_settings()
 
 src_imgs_path = settings.SCR_FOLDER_NAME
 weights_path = settings.CHECKPOINT_PATH
 
+id_facenet_model = settings.ID_FACENET_MODEL
+id_dlib_model = settings.ID_DLIB_MODEL
+id_emotion_model = settings.ID_EMOTION_MODEL
+id_age_model = settings.ID_AGE_MODEL
+id_gender_model = settings.ID_GENDER_MODEL
+id_race_model = settings.ID_RACE_MODEL
+
 detector_backend_checkpoint_name = settings.DECTECOR_MODEL_CHECKPOINT_NAME
 detector_backend_name = settings.DETECTOR_BACKEND_NAME
-deepface_model_checkpoint_name = settings.DEEPFACE_MODEL_CHECKPOINT_NAME
-deepface_model_name = settings.DEEPFACE_MODEL_NAME
+face_analyst_model_checkpoint_name = settings.FACE_ANALYST_MODEL_CHECKPOINT_NAME
+face_analyst_model_name = settings.FACE_ANALYST_MODEL_NAME
 emotion_checkpoint_name = settings.EMOTION_CHECKPOINT_NAME
 emotion_model_name = settings.EMOTION_MODEL_NAME
 age_checkpoint_name = settings.AGE_CHECKPOINT_NAME
@@ -29,17 +37,35 @@ deepface_distance = settings.DEEPFACE_DISTANCE
 if not os.path.exists(weights_path):
     os.makedirs(weights_path)
 
+face_analyst_model_checkpoint_path = os.path.join(weights_path,face_analyst_model_checkpoint_name)
+if not os.path.isfile(face_analyst_model_checkpoint_path):
+    print("Download facenet model.")
+    download_model(id_facenet_model, face_analyst_model_checkpoint_path)
 detector_backend_checkpoint_path = os.path.join(weights_path,detector_backend_checkpoint_name)
-deepface_model_checkpoint_path = os.path.join(weights_path,deepface_model_checkpoint_name)
+if not os.path.isfile(detector_backend_checkpoint_path):
+    print("Download dlib model.")
+    download_model(id_dlib_model, detector_backend_checkpoint_path)
 emotion_checkpoint_path = os.path.join(weights_path, emotion_checkpoint_name)
+if not os.path.isfile(emotion_checkpoint_path):
+    print("Download emotion model.")
+    download_model(id_emotion_model, emotion_checkpoint_path)
 age_checkpoint_path = os.path.join(weights_path, age_checkpoint_name)
+if not os.path.isfile(age_checkpoint_path):
+    print("Download age model.")
+    download_model(id_age_model, age_checkpoint_path)
 gender_checkpoint_path = os.path.join(weights_path, gender_checkpoint_name)
+if not os.path.isfile(gender_checkpoint_path):
+    print("Download gender model.")
+    download_model(id_gender_model, gender_checkpoint_path)
 race_checkpoint_path = os.path.join(weights_path, race_checkpoint_name)
+if not os.path.isfile(race_checkpoint_path):
+    print("Download race model.")
+    download_model(id_race_model, race_checkpoint_path)
 
 class DeepFaceProcessingModel:
     def __init__(self):
         self.face_detector =  DlibWrapper.build_model(detector_backend_checkpoint_path)
-        self.face_respresent = build_model(deepface_model_name,deepface_model_checkpoint_path)
+        self.face_respresent = build_model(face_analyst_model_name,face_analyst_model_checkpoint_path)
         self.user_analysis_model = {}
         self.user_analysis_model["emotion"] = build_model(emotion_model_name, emotion_checkpoint_path)
         self.user_analysis_model["age"] = build_model(age_model_name,age_checkpoint_path)
@@ -47,7 +73,7 @@ class DeepFaceProcessingModel:
         self.user_analysis_model["race"] = build_model(race_model_name, race_checkpoint_path)
         self.database_image_path = database_image_path
         self.distance_calculator = deepface_distance
-        self.face_analyst_model = deepface_model_name
+        self.face_analyst_model = face_analyst_model_name
         self.max = 0
 
     def get_images_list_path(self, src_folder_path):
