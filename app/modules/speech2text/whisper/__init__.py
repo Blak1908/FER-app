@@ -99,6 +99,7 @@ def load_model(
     device: Optional[Union[str, torch.device]] = None,
     download_root: str = None,
     in_memory: bool = False,
+    s2t_model_path = None,
 ) -> Whisper:
     """
     Load a Whisper ASR model
@@ -123,19 +124,19 @@ def load_model(
 
     if device is None:
         device = "cuda" if torch.cuda.is_available() else "cpu"
-    if download_root is None:
-        default = os.path.join(os.path.expanduser("~"), ".cache")
-        download_root = os.path.join(os.getenv("XDG_CACHE_HOME", default), "whisper")
+    # if download_root is None:
+    #     default = os.path.join(os.path.expanduser("~"), ".cache")
+    #     download_root = os.path.join(os.getenv("XDG_CACHE_HOME", default), "whisper")
 
-    if name in _MODELS:
-        checkpoint_file = _download(_MODELS[name], download_root, in_memory)
-        alignment_heads = _ALIGNMENT_HEADS[name]
-    elif os.path.isfile(name):
-        checkpoint_file = open(name, "rb").read() if in_memory else name
+    # if name in _MODELS:
+    #     checkpoint_file = _download(_MODELS[name], download_root, in_memory)
+    #     alignment_heads = _ALIGNMENT_HEADS[name]
+    if os.path.isfile(s2t_model_path):
+        checkpoint_file = open(s2t_model_path, "rb").read() if in_memory else s2t_model_path
         alignment_heads = None
     else:
         raise RuntimeError(
-            f"Model {name} not found; available models = {available_models()}"
+            f"Model {s2t_model_path} not found; available models = {available_models()}"
         )
 
     with (
