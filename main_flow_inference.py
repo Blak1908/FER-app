@@ -6,6 +6,7 @@ import asyncio
 import cv2
 from app.core.settings import get_settings
 from app.core.utils import remove_special_characters
+from app.modules.ai_chatbot import g4f
 
 settings = get_settings()
 
@@ -25,6 +26,8 @@ headers = {
         }
 
 async def consume_messages():
+    loop_require = False 
+    
     while True:
         print("Start listening in 5s...")
         audio_recorded = sd.rec(int(seconds * sample_rate), samplerate=sample_rate, channels=1)
@@ -41,16 +44,19 @@ async def consume_messages():
 
         if response.status_code == 200:
             # Parse the JSON response
-            json_response = response.json()
+            json_response_speech2text = response.json()
 
             # Access the 'result' value from the JSON response
-            result_text = json_response.get('text')
+            result_text = json_response_speech2text.get('text')
             
             # Use the 'result_text' as needed
             print("Speech-to-text text:")
             print(result_text)
-            if remove_special_characters(result_text.strip().lower()) == "xin chào":
+            text = result_text.strip().lower()
+            if remove_special_characters(text) == "xin chào" or loop_require:
                 print("start object analysis")
+                loop_require = True
+                
                 binary_images = [] 
                 cap = cv2.VideoCapture(1)
                 if not cap.isOpened():
@@ -82,9 +88,16 @@ async def consume_messages():
                     })
                 
                 response = requests.request("POST", url, headers=headers, data=payload)
-                json_response = response.json()
-                print(json_response)
+                response_user_analyst = response.json()
+                print(response_user_analyst)
                 
+                chatbot_response = g4f.ChatCompletion.create(
+                    model=g4f.models.gpt_4,
+                    messages=[{"role": "user", "content": str(text)}],
+                )  # altera ive model setting  
+
+                print(chatbot_response)
+                 
             else:
                 continue
             
