@@ -1,6 +1,7 @@
-# Vietnamese Chatbot
+# Vietnamese AI Chatbot with Transformer
 
-Welcome to our Vietnamese Chatbot project! This repository contains the code and resources to build a chatbot for the Vietnamese language using the transformer architecture in Natural Language Processing (NLP). Our chatbot is designed to handle various tasks, answer questions, and engage in meaningful conversations in Vietnamese.
+This is an AI chatbot that uses a transformer model as its main model. The chatbot can interact with users in a variety of ways, including answering questions, providing recommendations, and more. The chatbot can also analyze users based on their age, gender, interests, and more. Additionally, the chatbot has integration with speech-to-text and text-to-speech models.
+
 
 ## Project Overview
 
@@ -11,9 +12,11 @@ The goal of this project is to create an intelligent and interactive chatbot cap
 
 ## Features
 
-- **Interactive Conversations:** Engage in interactive and dynamic conversations with the chatbot.
-- **Multi-Task Handling:** The chatbot can handle a wide range of tasks including answering questions, providing recommendations, and more.
-- **Context-Aware Responses:** Responses are generated considering the context of the conversation, resulting in more natural interactions.
+User interaction
+Multi-task handling, including answering questions, providing recommendations, and more
+Context-aware responses, resulting in more natural interactions
+User analysis
+Integration with speech-to-text and text-to-speech models
 
 ## Technologies Used
 
@@ -24,13 +27,13 @@ The goal of this project is to create an intelligent and interactive chatbot cap
 
 ## Getting Started
 
-### Prerequisites
-
-- Python 3.x installed on your system.
-- Install required packages using `pip install -r requirements.txt`.
-
 ### Usage
+To use the chatbot, follow these steps:
+1. **Setup**
+We used Python 3.9.9 and PyTorch 1.10.1 to train and test our models, but the codebase is expected to be compatible with Python 3.8-3.11 and recent PyTorch versions. The codebase also depends on a few Python packages, most notably OpenAI's tiktoken for their fast tokenizer implementation.
+ ```bash
+   pip install -r requirement.txt
 
-1. **Training the Model:** Train the transformer model using the provided training script. Modify the training parameters as needed.
+3. **Inference:**
    ```bash
-   python train.py
+   python main_flow_inference.py 
