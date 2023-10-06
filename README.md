@@ -17,9 +17,9 @@ The goal of this project is to create an intelligent and interactive chatbot cap
 ## Technologies Used
 
 - **Python:** The core programming language used for building the chatbot.
-- **PyTorch:** Deep learning framework utilized for implementing the transformer model.
+- **Tensorflow:** Deep learning framework utilized for implementing the transformer model.
 - **Transformers Library:** Leveraged for accessing pre-trained transformer models.
-- **Flask:** Web framework used for building the chatbot's user interface.
+- **FastAPI:** Web framework used for building the chatbot's user interface.
 
 ## Getting Started
 
