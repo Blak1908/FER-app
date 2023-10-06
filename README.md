@@ -31,9 +31,7 @@ Integration with speech-to-text and text-to-speech models
 To use the chatbot, follow these steps:
 1. **Setup**
  We used Python 3.9.9 and PyTorch 1.10.1 to train and test our models, but the codebase is expected to be compatible with Python 3.8-3.11 and recent PyTorch versions. The codebase also depends on a few Python packages, most notably OpenAI's tiktoken for their fast tokenizer implementation.
-
-  ```bash
-    pip install -r requirement.txt
+pip install -r requirement.txt
 
 2. **Inference**
    ```bash
