@@ -23,8 +23,4 @@ __pycache__/*
 app/core/temp/*
 results/*
 app/weights/*
-
-*.jpeg
-*.jpg
-*.png
 *__pycache__/
