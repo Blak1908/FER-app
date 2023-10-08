@@ -35,4 +35,7 @@ pip install -r requirement.txt
 
 2. **Inference**
    ```bash
+   uvicorn t2s:app --host 172.17.12.221 --port 8000
+   uvicorn s2t:app --host 172.17.12.221 --port 8000
+   uvicorn user_analyst_api:app --host 172.17.12.221 --port 8000
    python main_flow_inference.py 
