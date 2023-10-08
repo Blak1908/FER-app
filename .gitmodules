@@ -1,0 +1,3 @@
+[submodule "/home/dattran/datadrive/AI-project/AI-Chatbot-Synthesis/vietnamese_chatbot"]
+	path = /home/dattran/datadrive/AI-project/AI-Chatbot-Synthesis/vietnamese_chatbot
+	url = https://github.com/blak-tran/vietnamese_chatbot_research.git
