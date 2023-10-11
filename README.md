@@ -6,14 +6,15 @@ This is an AI chatbot powered by a transformer model, designed to interact with 
 
 The goal of this project is to create an intelligent and interactive chatbot capable of understanding and generating human-like responses in Vietnamese. We leverage the transformer model, a cutting-edge deep learning architecture in the field of Natural Language Processing (NLP), to achieve this objective. The chatbot is trained on a diverse dataset to ensure accurate and contextually relevant responses.
 
-![Chatbot using Transformer Architecture](https://github.com/blak-tran/AI-Chatbot-Synthesis/blob/da19064f92e8aa2da7d6dfacc4bf236ac38a18fb/assets/transformer_architect.png)
-
 ## Getting Started
 
 ### Clone the Repository
 To use the Transformer chatbot:
 
 clone https://github.com/blak-tran/vietnamese_chatbot_research.git
+
+![Chatbot using Transformer Architecture](https://github.com/blak-tran/AI-Chatbot-Synthesis/blob/da19064f92e8aa2da7d6dfacc4bf236ac38a18fb/assets/transformer_architect.png)
+
 
 ## Features
 
